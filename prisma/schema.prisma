@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id           String    @id(map: "book_pk") @db.VarChar(50)
+  title        String?   @db.VarChar(200)
+  contents     String?   @db.VarChar(200)
+  url          String?   @db.VarChar(200)
+  authors      String[]  @default([]) @db.VarChar
+  translators  String[]  @default([]) @db.VarChar
+  publisher    String?   @db.VarChar
+  price        Int?
+  salePrice    Int?      @map("sale_price")
+  thumbnailUrl String?   @map("thumbnail_url") @db.VarChar(200)
+  status       String?   @db.VarChar(20)
+  publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
+
+  @@map("book")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model library {
+  user_seq Int
+  book_id  String @db.VarChar(50)
+
+  @@ignore
+}
+
+model Sentence {
+  seq      Int      @id(map: "sentence_pk")
+  bookId   String   @map("book_id") @db.VarChar(50)
+  userSeq  Int      @map("user_seq")
+  sentence String   @db.VarChar(200)
+  tags     String[] @default([]) @db.VarChar
+
+  @@map("sentence")
+}
+
+model User {
+  seq       Int       @id @default(autoincrement())
+  macId     String    @map("mac_id") @db.VarChar(50)
+  nickname  String    @db.VarChar(20)
+  imageUrl  String?   @map("image_url") @db.VarChar
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+
+  @@map("user")
+}

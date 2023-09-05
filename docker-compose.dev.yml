@@ -1,0 +1,21 @@
+# docker compose -f docker-compose.dev.yml up --build -d
+# docker compose -f docker-compose.dev.yml down -v --rmi local
+version: '0.1'
+
+services:
+  server:
+    image: moon-zip-backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+      target: development
+    command: npm run start:dev
+    restart: always
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - server:/usr/src/app/node_modules
+
+volumes:
+  server:
