@@ -33,7 +33,7 @@ model library {
 }
 
 model Sentence {
-  seq      Int      @id(map: "sentence_pk")
+  seq      Int      @id(map: "sentence_pk") @default(autoincrement())
   bookId   String   @map("book_id") @db.VarChar(50)
   userSeq  Int      @map("user_seq")
   sentence String   @db.VarChar(200)
