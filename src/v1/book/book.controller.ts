@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Inject,
+  ParseEnumPipe,
+} from '@nestjs/common';
 import { IBookService } from './port/in/book.service.interface';
 import { CreateBookDto } from './dto/create-book.dto';
+import { SearchBookDto } from './dto/search-book.dto';
 import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -22,5 +31,12 @@ export class BookController {
   @ApiCreatedResponse({ type: Book })
   async create(@Body() createBookDto: CreateBookDto) {
     return await this.bookService.create(createBookDto);
+  }
+
+  @Get(':target/:query')
+  @ApiOperation({ summary: '도서 조회' })
+  @ApiOkResponse({ type: Book })
+  async search(@Param() { target, query }: SearchBookDto) {
+    return await this.bookService.search(target, query);
   }
 }
