@@ -20,6 +20,7 @@ model Book {
   thumbnailUrl String?   @map("thumbnail_url") @db.VarChar(200)
   status       String?   @db.VarChar(20)
   publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
+  sentences    Sentence[]
 
   @@map("book")
 }
@@ -38,6 +39,7 @@ model Sentence {
   userSeq  Int      @map("user_seq")
   sentence String   @db.VarChar(200)
   tags     String[] @default([]) @db.VarChar
+  book     Book    @relation(fields: [bookId], references: [id])
 
   @@map("sentence")
 }
