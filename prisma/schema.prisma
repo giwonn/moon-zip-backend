@@ -10,7 +10,7 @@ datasource db {
 model Book {
   id           String    @id(map: "book_pk") @db.VarChar(50)
   title        String?   @db.VarChar(200)
-  contents     String?   @db.VarChar(200)
+  contents     String?   @db.VarChar(1000)
   url          String?   @db.VarChar(200)
   authors      String[]  @default([]) @db.VarChar
   translators  String[]  @default([]) @db.VarChar
