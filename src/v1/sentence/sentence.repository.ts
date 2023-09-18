@@ -11,11 +11,14 @@ export class SentenceRepository implements ISentenceRepository {
       where: {
         userSeq,
       },
+      include: {
+        book: true,
+      },
     });
   }
-  create(user: Sentence) {
+  create(sentence: Sentence) {
     return this.prisma.sentence.create({
-      data: user,
+      data: sentence,
     });
   }
 }

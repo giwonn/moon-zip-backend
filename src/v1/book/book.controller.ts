@@ -37,7 +37,7 @@ export class BookController {
       authors,
       contents,
       datetime: publishDate,
-      isbn,
+      isbn: originalIsbn,
       price,
       publisher,
       sale_price: salePrice,
@@ -47,6 +47,14 @@ export class BookController {
       translators,
       url,
     } = book;
+
+    let isbn;
+    if (originalIsbn.includes(' ')) {
+      const isbnParts = originalIsbn.split(' ');
+      isbn = isbnParts[1];
+    } else {
+      isbn = originalIsbn;
+    }
 
     createBookDto.authors = authors;
     createBookDto.contents = contents;
