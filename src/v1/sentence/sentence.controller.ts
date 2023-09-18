@@ -24,4 +24,11 @@ export class SentenceController {
   async create(@Body() createSentence: CreateSentenceDto) {
     return await this.sentenceService.create(createSentence);
   }
+
+  @Get(':userSeq')
+  @ApiOperation({ summary: '사용자의 문장 조회' })
+  @ApiOkResponse({ type: [Sentence] })
+  async findByUserSeq(@Param('userSeq') userSeq: number) {
+    return this.sentenceService.findByUserSeq(userSeq);
+  }
 }

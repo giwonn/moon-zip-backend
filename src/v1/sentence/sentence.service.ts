@@ -12,4 +12,8 @@ export class SentenceService {
   async create(createSentenceDto: CreateSentenceDto) {
     return await this.sentenceRepository.create(createSentenceDto.to());
   }
+
+  async findByUserSeq(userSeq: number) {
+    return this.sentenceRepository.findByUserSeq(userSeq);
+  }
 }
