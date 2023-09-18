@@ -4,19 +4,19 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Sentence } from '../entities/sentence.entity';
 
 export class CreateSentenceDto {
-  @ApiProperty()
+  @ApiProperty({ example: '9788996991342' })
   @IsString()
   bookId: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   @IsNumber()
   userSeq: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: '이것은 문장입니다.' })
   @IsString()
   sentence: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: ['태그1', '태그2'] })
   @IsString({ each: true })
   tags: string[];
 
