@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Book } from '../entities/book.entity';
 
 export class CreateBookDto {
-  @ApiProperty()
+  @ApiProperty({ example: '9788996991342' })
   @IsString()
   id: string;
 
