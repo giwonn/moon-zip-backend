@@ -30,6 +30,37 @@ export class BookController {
   @ApiOperation({ summary: '도서 생성' })
   @ApiCreatedResponse({ type: Book })
   async create(@Body() createBookDto: CreateBookDto) {
+    const res = await this.bookService.search('isbn', createBookDto.id);
+    const book = res[0];
+
+    const {
+      authors,
+      contents,
+      datetime: publishDate,
+      isbn,
+      price,
+      publisher,
+      sale_price: salePrice,
+      status,
+      thumbnail: thumbnailUrl,
+      title,
+      translators,
+      url,
+    } = book;
+
+    createBookDto.authors = authors;
+    createBookDto.contents = contents;
+    createBookDto.publishDate = publishDate;
+    createBookDto.price = price;
+    createBookDto.publisher = publisher;
+    createBookDto.salePrice = salePrice;
+    createBookDto.status = status;
+    createBookDto.thumbnailUrl = thumbnailUrl;
+    createBookDto.title = title;
+    createBookDto.translators = translators;
+    createBookDto.url = url;
+    createBookDto.id = isbn;
+
     return await this.bookService.create(createBookDto);
   }
 
