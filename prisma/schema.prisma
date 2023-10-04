@@ -10,7 +10,7 @@ datasource db {
 model Book {
   id           String    @id(map: "book_pk") @db.VarChar(50)
   title        String?   @db.VarChar(200)
-  contents     String?   @db.VarChar(200)
+  contents     String?   @db.VarChar(1000)
   url          String?   @db.VarChar(200)
   authors      String[]  @default([]) @db.VarChar
   translators  String[]  @default([]) @db.VarChar
@@ -20,6 +20,7 @@ model Book {
   thumbnailUrl String?   @map("thumbnail_url") @db.VarChar(200)
   status       String?   @db.VarChar(20)
   publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
+  sentences    Sentence[]
 
   @@map("book")
 }
@@ -33,11 +34,12 @@ model library {
 }
 
 model Sentence {
-  seq      Int      @id(map: "sentence_pk")
+  seq      Int      @id(map: "sentence_pk") @default(autoincrement())
   bookId   String   @map("book_id") @db.VarChar(50)
   userSeq  Int      @map("user_seq")
   sentence String   @db.VarChar(200)
   tags     String[] @default([]) @db.VarChar
+  book     Book    @relation(fields: [bookId], references: [id])
 
   @@map("sentence")
 }
