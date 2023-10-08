@@ -33,16 +33,37 @@ model library {
   @@ignore
 }
 
+model Tag {
+  seq            Int              @id @default(autoincrement())
+  name           String           @db.VarChar(20)
+  userSeq        Int              @map("user_seq")
+  sentenceSeq    Int              @map("sentence_seq")
+  SentenceTag    SentenceTag[]
+
+  @@map("tag")
+}
+
 model Sentence {
   seq      Int      @id(map: "sentence_pk") @default(autoincrement())
   bookId   String   @map("book_id") @db.VarChar(50)
   userSeq  Int      @map("user_seq")
   sentence String   @db.VarChar(200)
-  tags     String[] @default([]) @db.VarChar
   book     Book    @relation(fields: [bookId], references: [id])
+  SentenceTag  SentenceTag[]
 
   @@map("sentence")
 }
+
+model SentenceTag {
+  id         Int     @id @default(autoincrement())
+  sentence   Sentence @relation(fields: [sentenceSeq], references: [seq])
+  sentenceSeq Int
+  tag        Tag     @relation(fields: [tagSeq], references: [seq])
+  tagSeq     Int
+
+  @@unique([sentenceSeq, tagSeq])
+}
+
 
 model User {
   seq       Int       @id @default(autoincrement())

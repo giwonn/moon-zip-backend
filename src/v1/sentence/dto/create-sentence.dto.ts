@@ -16,16 +16,11 @@ export class CreateSentenceDto {
   @IsString()
   sentence: string;
 
-  @ApiProperty({ example: ['태그1', '태그2'] })
-  @IsString({ each: true })
-  tags: string[];
-
   to(): Sentence {
     return Builder<Sentence>()
       .bookId(this.bookId)
       .userSeq(this.userSeq)
       .sentence(this.sentence)
-      .tags(this.tags)
       .build();
   }
 }

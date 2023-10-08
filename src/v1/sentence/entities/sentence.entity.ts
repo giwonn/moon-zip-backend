@@ -9,6 +9,4 @@ export class Sentence implements PrismaSentence {
   userSeq: number;
   @ApiProperty()
   sentence: string;
-  @ApiProperty()
-  tags: string[];
 }
