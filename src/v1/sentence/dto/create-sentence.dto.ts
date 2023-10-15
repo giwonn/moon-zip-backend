@@ -10,11 +10,11 @@ export class CreateSentenceDto {
 
   @ApiProperty({ example: 1 })
   @IsNumber()
-  userSeq: number;
+  userId: string;
 
   @ApiProperty({ example: '이것은 문장입니다.' })
   @IsString()
-  sentence: string;
+  content: string;
 
   @ApiProperty({ example: ['태그1', '태그2'] })
   @IsString({ each: true })
@@ -23,9 +23,8 @@ export class CreateSentenceDto {
   to(): Sentence {
     return Builder<Sentence>()
       .bookId(this.bookId)
-      .userSeq(this.userSeq)
-      .sentence(this.sentence)
-      .tags(this.tags)
+      .userId(this.userId)
+      .content(this.content)
       .build();
   }
 }

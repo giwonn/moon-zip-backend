@@ -3,12 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Sentence implements PrismaSentence {
   seq: number;
-  @ApiProperty()
   bookId: string;
-  @ApiProperty()
-  userSeq: number;
-  @ApiProperty()
-  sentence: string;
-  @ApiProperty()
-  tags: string[];
+  userId: string;
+  content: string;
+  createdAt: Date;
+  deletedAt: Date;
 }
