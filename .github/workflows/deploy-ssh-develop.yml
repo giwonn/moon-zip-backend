@@ -1,0 +1,23 @@
+name: Docker Image CI
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+
+  build:
+    name: build-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.RASP_HOST }}
+          username: ${{ secrets.RASP_USERNAME }}
+          password: ${{ secrest.RASP_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sudo cd /usr/src
+            sudo ./deploy-develop.sh
