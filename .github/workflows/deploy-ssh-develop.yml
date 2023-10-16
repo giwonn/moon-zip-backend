@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: deploy using ssh
         env:
-            RASP_DATABASE_URL: ${{ secrets.RASP_DATABASE_URL }}
+          RASP_DATABASE_URL: ${{ secrets.RASP_DATABASE_URL }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RASP_HOST }}
@@ -25,6 +25,12 @@ jobs:
             set -e
             cd /usr/src
             if [ ! -d 'moon-zip-backend' ]; then
+              sudo git clone https://github.com/moon-zip/moon-zip-backend.git
+              cd moon-zip-backend
               echo `DATABASE_URL=$RASP_DATABASE_URL` > ".env"
+              cd ../
             fi
-             sudo sh deploy-develop.sh
+            cd moon-zip-backend
+            git pull origin develop
+            git checkout develop
+            docker compose -f docker-compose.dev.yml up --build --force-recreate -d
