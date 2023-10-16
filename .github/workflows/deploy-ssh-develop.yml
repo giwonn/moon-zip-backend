@@ -19,11 +19,11 @@ jobs:
           password: ${{ secrets.RASP_PASSWORD }}
           port: ${{ secrets.RASP_PORT }}
           script: |
-            sudo cd /usr/src
+            cd /usr/src
             if [ ![ -d "moon-zip-backend" && -e "moon-zip-backend" ] ]; then
               sudo git clone git@github.com:moon-zip/moon-zip-backend.git
               cd moon-zip-backend
               echo `DATABASE_URL=${{ secrets.RASP_DATABASE_URL }}` > ".env"
               cd ../
             fi
-            sudo ./deploy-develop.sh
+            ./deploy-develop.sh
