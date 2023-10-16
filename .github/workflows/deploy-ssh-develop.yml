@@ -1,0 +1,39 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+
+  build:
+    name: build-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: deploy using ssh
+        env:
+          RASP_DATABASE_URL: ${{ secrets.RASP_DATABASE_URL }}
+          PRIVATE_ACCESS_TOKEN: ${{ secrets.PRIVATE_ACCESS_TOKEN }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.RASP_HOST }}
+          username: ${{ secrets.RASP_USERNAME }}
+          password: ${{ secrets.RASP_PASSWORD }}
+          port: ${{ secrets.RASP_PORT }}
+          envs: RASP_DATABASE_URL,PRIVATE_ACCESS_TOKEN
+          script: |
+            set -e
+            cd /usr/src
+            if [ ! -d 'moon-zip-backend' ]; then
+              sudo git clone https://giwonn:$PRIVATE_ACCESS_TOKEN@github.com/moon-zip/moon-zip-backend.git
+              cd moon-zip-backend
+              git config --global --add safe.directory /usr/src/moon-zip-backend
+              cd ../
+              sudo echo "DATABASE_URL=${RASP_DATABASE_URL}" > ".env"
+              sudo mv .env moon-zip-backend/
+            fi
+            cd moon-zip-backend
+            sudo git pull origin develop
+            sudo git checkout develop
+            sudo docker compose -f docker-compose.prod.yml up --build --force-recreate -d
