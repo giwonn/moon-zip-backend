@@ -26,7 +26,7 @@ jobs:
             set -e
             cd /usr/src
             if [ ! -d 'moon-zip-backend' ]; then
-              sudo git clone https://giwonn:`$PRIVATE_ACCESS_TOKEN`@github.com/moon-zip/moon-zip-backend.git
+              sudo git clone https://giwonn:$PRIVATE_ACCESS_TOKEN@github.com/moon-zip/moon-zip-backend.git
               cd moon-zip-backend
               echo `DATABASE_URL=$RASP_DATABASE_URL` > ".env"
               cd ../
