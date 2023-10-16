@@ -1,9 +1,14 @@
-FROM node:20-alpine AS base
+FROM node:20-alpine AS builder
 
-COPY . /usr/src/app
 WORKDIR /usr/src/app
+COPY . .
 
-RUN npm install -production && npm cache clean --force
+RUN npm install
+RUN npm run build
 
-EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+# STEP 2
+FROM node:20-alpine
+WORKDIR /usr/src/app
+ENV NODE_ENV production
+COPY --from=builder /usr/src/app ./
+
