@@ -12,18 +12,22 @@ jobs:
 
     steps:
       - name: deploy using ssh
+        env:
+            RASP_DATABASE_URL: ${{ secrets.RASP_DATABASE_URL }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RASP_HOST }}
           username: ${{ secrets.RASP_USERNAME }}
           password: ${{ secrets.RASP_PASSWORD }}
           port: ${{ secrets.RASP_PORT }}
+          envs: RASP_DATABASE_URL
           script: |
+            set -e
             cd /usr/src
-            if [ ![  -e "moon-zip-backend" && -d "moon-zip-backend" ] ]; then
+            if [ ! -d 'moon-zip-backend' ]; then
               sudo git clone git@github.com:moon-zip/moon-zip-backend.git
               cd moon-zip-backend
-              echo `DATABASE_URL=${{ secrets.RASP_DATABASE_URL }}` > ".env"
+              echo `DATABASE_URL=$RASP_DATABASE_URL` > ".env"
               cd ../
             fi
              sudo sh deploy-develop.sh
