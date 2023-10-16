@@ -30,6 +30,7 @@ jobs:
             if [ ! -d 'moon-zip-backend' ]; then
               sudo git clone https://giwonn:$PRIVATE_ACCESS_TOKEN@github.com/moon-zip/moon-zip-backend.git
               cd moon-zip-backend
+              git config --global --add safe.directory /usr/src/moon-zip-backend
               sudo echo "DATABASE_URL=${RASP_DATABASE_URL}" > ".env"
               cd ../
             fi
