@@ -36,6 +36,6 @@ jobs:
               sudo mv .env moon-zip-backend/
             fi
             cd moon-zip-backend
-            git pull origin develop
-            git checkout develop
-            docker compose -f docker-compose.dev.yml up --build --force-recreate -d
+            sudo git pull origin develop
+            sudo git checkout develop
+            sudo docker compose -f docker-compose.dev.yml up --build --force-recreate -d
