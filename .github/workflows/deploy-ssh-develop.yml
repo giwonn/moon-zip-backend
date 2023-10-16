@@ -1,0 +1,30 @@
+name: Docker Image CI
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+
+  build:
+    name: build-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: deploy using ssh
+        env:
+            RASP_DATABASE_URL: ${{ secrets.RASP_DATABASE_URL }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.RASP_HOST }}
+          username: ${{ secrets.RASP_USERNAME }}
+          password: ${{ secrets.RASP_PASSWORD }}
+          port: ${{ secrets.RASP_PORT }}
+          envs: RASP_DATABASE_URL
+          script: |
+            set -e
+            cd /usr/src
+            if [ ! -d 'moon-zip-backend' ]; then
+              echo `DATABASE_URL=$RASP_DATABASE_URL` > ".env"
+            fi
+             sudo sh deploy-develop.sh
