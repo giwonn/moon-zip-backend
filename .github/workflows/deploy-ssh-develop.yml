@@ -14,18 +14,19 @@ jobs:
       - name: deploy using ssh
         env:
           RASP_DATABASE_URL: ${{ secrets.RASP_DATABASE_URL }}
+          PRIVATE_ACCESS_TOKEN: ${{ secrets.PRIVATE_ACCESS_TOKEN }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RASP_HOST }}
           username: ${{ secrets.RASP_USERNAME }}
           password: ${{ secrets.RASP_PASSWORD }}
           port: ${{ secrets.RASP_PORT }}
-          envs: RASP_DATABASE_URL
+          envs: RASP_DATABASE_URL,PRIVATE_ACCESS_TOKEN
           script: |
             set -e
             cd /usr/src
             if [ ! -d 'moon-zip-backend' ]; then
-              sudo git clone https://github.com/moon-zip/moon-zip-backend.git
+              sudo git clone https://giwonn:$PRIVATE_ACCESS_TOKEN@github.com/moon-zip/moon-zip-backend.git
               cd moon-zip-backend
               echo `DATABASE_URL=$RASP_DATABASE_URL` > ".env"
               cd ../
