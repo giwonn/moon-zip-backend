@@ -17,7 +17,7 @@ jobs:
           host: ${{ secrets.RASP_HOST }}
           username: ${{ secrets.RASP_USERNAME }}
           password: ${{ secrest.RASP_PASSWORD }}
-          port: ${{ secrets.PORT }}
+          port: ${{ secrets.RASP_PORT }}
           script: |
             sudo cd /usr/src
             sudo ./deploy-develop.sh
