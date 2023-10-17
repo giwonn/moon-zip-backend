@@ -20,6 +20,7 @@ model Book {
   thumbnailUrl String?   @map("thumbnail_url") @db.VarChar(200)
   status       String?   @db.VarChar(20)
   publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
+  sentences    Sentence[]
 
   @@map("book")
 }
@@ -31,6 +32,7 @@ model Sentence {
   content   String    @db.VarChar(200)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+  book      Book     @relation(fields: [bookId], references: [id])
 
   @@map("sentence")
 }

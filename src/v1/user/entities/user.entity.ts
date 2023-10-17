@@ -3,7 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class User implements PrismaUser {
   @ApiProperty()
-  seq: number;
+  id: string;
+  @ApiProperty()
+  email: string;
   @ApiProperty()
   macId: string;
   @ApiProperty()

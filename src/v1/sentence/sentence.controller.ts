@@ -3,7 +3,6 @@ import { ISentenceService } from './port/in/sentence.service.interface';
 import { CreateSentenceDto } from './dto/create-sentence.dto';
 import {
   ApiCreatedResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -25,10 +24,10 @@ export class SentenceController {
     return await this.sentenceService.create(createSentence);
   }
 
-  @Get(':userSeq')
+  @Get(':userId')
   @ApiOperation({ summary: '사용자의 문장 조회' })
   @ApiOkResponse({ type: [Sentence] })
-  async findByUserSeq(@Param('userSeq') userSeq: number) {
-    return this.sentenceService.findByUserSeq(userSeq);
+  async findByUserSeq(@Param('userId') userId: string) {
+    return this.sentenceService.findByUserId(userId);
   }
 }

@@ -6,10 +6,11 @@ import { ISentenceRepository } from './port/out/sentence.repository.interface';
 @Injectable()
 export class SentenceRepository implements ISentenceRepository {
   constructor(private readonly prisma: PrismaRepository) {}
-  findByUserSeq(userSeq: number): Promise<Sentence[]> {
+  findByUserId(userId: string): Promise<Sentence[]> {
     return this.prisma.sentence.findMany({
       where: {
-        userSeq,
+        // test data
+        userId: '85322046-2031-4fcf-843d-3d8cb1347ed9' ?? userId,
       },
       include: {
         book: true,
