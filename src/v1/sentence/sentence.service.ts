@@ -13,7 +13,7 @@ export class SentenceService {
     return await this.sentenceRepository.create(createSentenceDto.to());
   }
 
-  async findByUserSeq(userSeq: number) {
-    return this.sentenceRepository.findByUserSeq(userSeq);
+  async findByUserId(userId: string) {
+    return this.sentenceRepository.findByUserId(userId);
   }
 }

@@ -6,9 +6,9 @@ export class Sentence implements PrismaSentence {
   @ApiProperty()
   bookId: string;
   @ApiProperty()
-  userSeq: number;
+  userId: string;
   @ApiProperty()
-  sentence: string;
-  @ApiProperty()
-  tags: string[];
+  content: string;
+  createdAt: Date;
+  deletedAt: Date | null;
 }

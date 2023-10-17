@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { IBookRepository } from './port/out/book.repository.interface';
@@ -24,11 +22,16 @@ class BookSearchClient {
     };
 
     try {
-      const response = await axios.get(url, { headers, params });
+      const response = await fetch(url, {
+        headers,
+        body: JSON.stringify(params),
+      });
       if (response.status !== 200) {
         return 'Err';
       }
-      return response.data['documents'];
+
+      return response.json['documents'];
+      // return response.data['documents'];
     } catch (error) {
       // console.error(error);
       return 'Err';
