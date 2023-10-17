@@ -1,5 +1,5 @@
-# docker compose -f docker-compose.dev.yml up --build --force-recreate -d
-# docker compose -f docker-compose.dev.yml down -v --rmi local
+# docker compose -f docker-compose.prod.yml up --build --force-recreate -d
+# docker compose -f docker-compose.prod.yml down -v --rmi local
 version: '0.1'
 
 services:
