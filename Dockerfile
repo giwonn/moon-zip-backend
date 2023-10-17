@@ -12,4 +12,4 @@ WORKDIR /usr/src/app
 ENV NODE_ENV production
 COPY --from=builder /usr/src/app ./
 
-CMD [ "npm", "run", "start:dev" ]
+CMD [ "npm", "run", "start:prod" ]
