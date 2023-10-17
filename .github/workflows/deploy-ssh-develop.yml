@@ -25,14 +25,18 @@ jobs:
           script: |
             set -e
             cd /usr/src
-            if [ ! -d 'moon-zip-backend' ]; then
-              sudo git clone https://giwonn:$PRIVATE_ACCESS_TOKEN@github.com/moon-zip/moon-zip-backend.git
-              cd moon-zip-backend
-              git config --global --add safe.directory /usr/src/moon-zip-backend
-              cd ../
-              sudo echo "DATABASE_URL=${RASP_DATABASE_URL}" > ".env"
-              sudo mv .env moon-zip-backend/
+            if [ -d 'moon-zip-backend' ]; then
+              docker compose -f docker-compose.prod.yml down -v --rmi local
+              sudo rm -rf moon-zip-backend
             fi
+
+            sudo git clone https://giwonn:$PRIVATE_ACCESS_TOKEN@github.com/moon-zip/moon-zip-backend.git
+            cd moon-zip-backend
+            git config --global --add safe.directory /usr/src/moon-zip-backend
+            cd ../
+            sudo echo "DATABASE_URL=${RASP_DATABASE_URL}" > ".env"
+            sudo mv .env moon-zip-backend/
+            
             cd moon-zip-backend
             sudo git pull origin develop
             sudo git checkout develop
