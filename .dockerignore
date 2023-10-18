@@ -7,4 +7,3 @@ Dockerfile
 *.sh
 *.yml
 node_modules
-dist
