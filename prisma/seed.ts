@@ -2,16 +2,6 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// {
-//   email: string;
-//   macId: string;
-//   nickname: string;
-//   imageUrl?: string;
-//   createdAt?: string | Date;
-//   updatedAt?: string | Date;
-//   deletedAt?: string | Date;
-//   id: string;
-// }
 const userData: Prisma.UserCreateInput[] = [
   {
     email: 'alice@prisma.io',
