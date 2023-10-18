@@ -27,7 +27,7 @@ jobs:
             cd /usr/src
             if [ -d 'moon-zip-backend' ]; then
               cd moon-zip-backend
-              sudo docker compose -f docker-compose.prod.yml down -v --rmi local
+              sudo docker compose -f docker-compose.yml down -v --rmi local
               cd ../
               sudo rm -rf moon-zip-backend
             fi
@@ -42,4 +42,4 @@ jobs:
             cd moon-zip-backend
             sudo git pull origin develop
             sudo git checkout develop
-            sudo docker compose -f docker-compose.prod.yml up --build --force-recreate -d
+            sudo docker compose -f docker-compose.yml up --build --force-recreate -d
