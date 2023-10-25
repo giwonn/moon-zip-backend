@@ -8,9 +8,9 @@ datasource db {
 }
 
 model Book {
-  id           String    @id(map: "book_pk") @db.VarChar(50)
+  id           String    @id(map: "book_pk") @db.VarChar(100)
   title        String?   @db.VarChar(200)
-  contents     String?   @db.VarChar(200)
+  contents     String?   @db.VarChar(1000)
   url          String?   @db.VarChar(200)
   authors      String[]  @default([]) @db.VarChar
   translators  String[]  @default([]) @db.VarChar
@@ -26,7 +26,7 @@ model Book {
 }
 
 model Sentence {
-  seq       Int       @id(map: "sentence_pk")
+  seq       Int       @id(map: "sentence_pk") @default(autoincrement())
   bookId    String    @map("book_id") @db.VarChar(50)
   userId    String    @map("user_id") @db.Uuid
   content   String    @db.VarChar(200)

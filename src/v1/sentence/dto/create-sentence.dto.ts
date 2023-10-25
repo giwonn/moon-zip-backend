@@ -8,7 +8,7 @@ export class CreateSentenceDto {
   @IsString()
   bookId: string;
 
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: '85322046-2031-4fcf-843d-3d8cb1347ed9' })
   @IsString()
   userId: string;
 

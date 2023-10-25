@@ -16,23 +16,23 @@ class BookSearchClient {
     const headers = {
       Authorization: `KakaoAK ${this.api_key}`,
     };
-    const params = {
+    const params = new URLSearchParams({
       target,
       query,
-    };
-
+    });
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`${url}?${params.toString()}`, {
         headers,
-        body: JSON.stringify(params),
       });
       if (response.status !== 200) {
         return 'Err';
       }
+      const data = await response.json();
 
-      return response.json['documents'];
+      return data['documents'];
       // return response.data['documents'];
     } catch (error) {
+      console.log(error)
       // console.error(error);
       return 'Err';
     }
