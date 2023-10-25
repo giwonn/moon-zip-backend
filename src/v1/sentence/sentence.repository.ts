@@ -10,7 +10,7 @@ export class SentenceRepository implements ISentenceRepository {
     return this.prisma.sentence.findMany({
       where: {
         // test data
-        userId: '85322046-2031-4fcf-843d-3d8cb1347ed9' ?? userId,
+        userId: userId,
       },
       include: {
         book: true,

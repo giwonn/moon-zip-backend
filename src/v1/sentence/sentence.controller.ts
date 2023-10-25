@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Inject, Headers } from '@nestjs/common';
 import { ISentenceService } from './port/in/sentence.service.interface';
 import { CreateSentenceDto } from './dto/create-sentence.dto';
 import {
@@ -24,10 +24,11 @@ export class SentenceController {
     return await this.sentenceService.create(createSentence);
   }
 
-  @Get(':userId')
+  @Get()
   @ApiOperation({ summary: '사용자의 문장 조회' })
   @ApiOkResponse({ type: [Sentence] })
-  async findByUserSeq(@Param('userId') userId: string) {
-    return this.sentenceService.findByUserId(userId);
+  async findByUserSeq(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return this.sentenceService.findByUserId(validUserId);
   }
 }
