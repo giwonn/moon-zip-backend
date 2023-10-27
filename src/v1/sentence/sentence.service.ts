@@ -16,4 +16,8 @@ export class SentenceService {
   async findByUserId(userId: string) {
     return this.sentenceRepository.findByUserId(userId);
   }
+
+  async count(userId: string) {
+    return await this.sentenceRepository.count(userId);
+  }
 }

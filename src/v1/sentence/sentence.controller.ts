@@ -33,4 +33,12 @@ export class SentenceController {
     let validUserId = token; // Validate Logic
     return this.sentenceService.findByUserId(validUserId);
   }
+
+  @Get('count')
+  @ApiOperation({ summary: '사용자의 문장 카운트' })
+  @ApiOkResponse({ type: Number })
+  async count(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.sentenceService.count(validUserId);
+  }
 }

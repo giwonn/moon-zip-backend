@@ -13,4 +13,8 @@ export class TagService {
     return await this.tagRepository.create(createTagDto.to());
   }
 
+  async count(userId: string) {
+    return await this.tagRepository.count(userId);
+  }
+
 }

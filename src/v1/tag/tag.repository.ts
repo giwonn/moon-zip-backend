@@ -11,4 +11,12 @@ export class TagRepository implements ITagRepository {
       data: tag,
     });
   }
+
+  count(userId: string) {
+    return this.prisma.tag.count({
+      where: {
+        userId,
+      },
+    });
+  }
 }

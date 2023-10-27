@@ -22,4 +22,11 @@ export class SentenceRepository implements ISentenceRepository {
       data: sentence,
     });
   }
+  count(userId: string) {
+    return this.prisma.sentence.count({
+      where: {
+        userId,
+      },
+    });
+  }
 }

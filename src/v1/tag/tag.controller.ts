@@ -26,4 +26,11 @@ export class TagController {
     return await this.tagService.create(createTag);
   }
 
+  @Get('count')
+  @ApiOperation({ summary: '사용자 태그 카운트' })
+  @ApiOkResponse({ type: Number })
+  async count(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.tagService.count(validUserId);
+  }
 }
