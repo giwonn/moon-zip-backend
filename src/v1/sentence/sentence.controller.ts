@@ -20,7 +20,9 @@ export class SentenceController {
   @Post()
   @ApiOperation({ summary: '문장 생성' })
   @ApiCreatedResponse({ type: Sentence })
-  async create(@Body() createSentence: CreateSentenceDto) {
+  async create(@Headers('token') token: string, @Body() createSentence: CreateSentenceDto) {
+    let validUserId = token; // Validate Logic
+    createSentence.userId = validUserId;
     return await this.sentenceService.create(createSentence);
   }
 
