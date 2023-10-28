@@ -17,4 +17,7 @@ export class TagService {
     return await this.tagRepository.count(userId);
   }
 
+  async findByUserId(userId: string) {
+    return await this.tagRepository.findByUserId(userId);
+  }
 }

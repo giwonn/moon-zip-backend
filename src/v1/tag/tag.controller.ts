@@ -23,7 +23,17 @@ export class TagController {
   async create(@Headers('token') token: string, @Body() createTag: CreateTagDto) {
     let validUserId = token; // Validate Logic
     createTag.userId = validUserId;
+
+    // 이미 태그가 있으면 생성하지 않고 createdAt은 똑같이 사용하고 sentenceSeq만 추가한다.
     return await this.tagService.create(createTag);
+  }
+
+  @Get('list')
+  @ApiOperation({ summary: '사용자 태그 조회' })
+  @ApiOkResponse({ type: [Tag] })
+  async findByUserSeq(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return this.tagService.findByUserId(validUserId);
   }
 
   @Get('count')

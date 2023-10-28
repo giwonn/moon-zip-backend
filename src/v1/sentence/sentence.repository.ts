@@ -9,7 +9,6 @@ export class SentenceRepository implements ISentenceRepository {
   findByUserId(userId: string): Promise<Sentence[]> {
     return this.prisma.sentence.findMany({
       where: {
-        // test data
         userId: userId,
       },
       include: {

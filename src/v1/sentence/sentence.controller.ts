@@ -26,7 +26,7 @@ export class SentenceController {
     return await this.sentenceService.create(createSentence);
   }
 
-  @Get()
+  @Get('list')
   @ApiOperation({ summary: '사용자의 문장 조회' })
   @ApiOkResponse({ type: [Sentence] })
   async findByUserSeq(@Headers('token') token: string) {
