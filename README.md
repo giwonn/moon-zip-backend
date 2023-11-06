@@ -30,7 +30,23 @@ docker compose -f docker-compose.dev.yml down -v --rmi local
 ```bash
 npx prisma migrate dev
 ```
-### DB 필드 수정하는 경우
+
+### DB 수정하는 경우 (로컬에서!)
+1. schema.prisma 수정
+2. `npx prisma db push`
+3. 마이그레이션 파일 생성
+```bash
+npx prisma migrate dev --name 파일이름
+```
+
+3. 생성한 마이그레이션 파일에 내용 작성
+```sql
+ALTER TABLE "user"
+RENAME COLUMN "seq" TO "id"
+```
+4. docker compose 재실행
+
+### DB 필드 변경하는 경우
 1. 마이그레이션 파일 생성
 `--name 파일이름`은 optional입니다.
 ```bash
