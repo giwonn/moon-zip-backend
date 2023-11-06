@@ -14,6 +14,12 @@ const userData: Prisma.UserCreateInput[] = [
 async function main() {
   console.log(`Start seeding ...`);
   for (const u of userData) {
+    const isExist = await prisma.user.findUnique({
+      where: { id: u.id },
+    });
+
+    if (isExist) continue;
+
     const user = await prisma.user.create({
       data: u,
     });

@@ -15,13 +15,15 @@ jobs:
         env:
           RASP_DATABASE_URL: ${{ secrets.RASP_DATABASE_URL }}
           PRIVATE_ACCESS_TOKEN: ${{ secrets.PRIVATE_ACCESS_TOKEN }}
+          SSL: ${{ secrets.SSL }}
+          RASP_SSL_PATH: ${{ secrets.RASP_SSL_PATH }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RASP_HOST }}
           username: ${{ secrets.RASP_USERNAME }}
           password: ${{ secrets.RASP_PASSWORD }}
           port: ${{ secrets.RASP_PORT }}
-          envs: RASP_DATABASE_URL,PRIVATE_ACCESS_TOKEN
+          envs: RASP_DATABASE_URL,PRIVATE_ACCESS_TOKEN,SSL,RASP_SSL_PATH
           script: |
             set -e
             cd /usr/src
@@ -37,7 +39,12 @@ jobs:
             git config --global --add safe.directory /usr/src/moon-zip-backend
             cd ../
             sudo echo "DATABASE_URL=\"${RASP_DATABASE_URL}\"" > ".env"
+            sudo echo "SSL=\"${SSL}\"" >> ".env"
+            sudo echo "RASP_SSL_PATH=\"${RASP_SSL_PATH}\"" >> ".env"
             sudo mv .env moon-zip-backend/
+            
+            sudo cp $RASP_SSL_PATH/privkey.pem moon-zip-backend
+            sudo cp $RASP_SSL_PATH/cert.pem moon-zip-backend
 
             cd moon-zip-backend
             sudo git pull origin develop

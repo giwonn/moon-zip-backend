@@ -6,10 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "npx prisma generate && nest build",
+    "build": "npx prisma generate && nest build && mv privkey.pem dist/privkey.pem && mv cert.pem dist/cert.pem",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "prisma:init": "npx prisma migrate dev && npx prisma db seed && npx prisma generate",
+    "prisma:init": "npx prisma migrate deploy && npx prisma generate && npx prisma db seed",
     "start:dev": "npm run prisma:init && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
