@@ -5,7 +5,6 @@ export class Sentence implements PrismaSentence {
   seq: number;
   @ApiProperty()
   bookId: string;
-  @ApiProperty()
   userId: string;
   @ApiProperty()
   content: string;

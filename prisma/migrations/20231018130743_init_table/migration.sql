@@ -30,6 +30,7 @@ CREATE TABLE "sentence" (
 
 -- CreateTable
 CREATE TABLE "user" (
+    "id" UUID NOT NULL,
     "email" VARCHAR(50) NOT NULL,
     "mac_id" VARCHAR(100) NOT NULL,
     "nickname" VARCHAR(20) NOT NULL,
@@ -37,7 +38,6 @@ CREATE TABLE "user" (
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP(6),
-    "id" UUID NOT NULL,
 
     CONSTRAINT "user_pk" PRIMARY KEY ("id")
 );
