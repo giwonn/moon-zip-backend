@@ -20,15 +20,25 @@ export class SentenceController {
   @Post()
   @ApiOperation({ summary: '문장 생성' })
   @ApiCreatedResponse({ type: Sentence })
-  async create(@Body() createSentence: CreateSentenceDto) {
+  async create(@Headers('token') token: string, @Body() createSentence: CreateSentenceDto) {
+    let validUserId = token; // Validate Logic
+    createSentence.userId = validUserId;
     return await this.sentenceService.create(createSentence);
   }
 
-  @Get()
+  @Get('list')
   @ApiOperation({ summary: '사용자의 문장 조회' })
   @ApiOkResponse({ type: [Sentence] })
   async findByUserSeq(@Headers('token') token: string) {
     let validUserId = token; // Validate Logic
     return this.sentenceService.findByUserId(validUserId);
+  }
+
+  @Get('count')
+  @ApiOperation({ summary: '사용자의 문장 카운트' })
+  @ApiOkResponse({ type: Number })
+  async count(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.sentenceService.count(validUserId);
   }
 }
