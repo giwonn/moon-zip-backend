@@ -5,4 +5,5 @@ export interface ISentenceService {
   findByUserId(userId: string): Promise<Sentence[]>;
   create(createSentenceDto: CreateSentenceDto): Promise<Sentence>;
   count(userId: string): Promise<number>;
+  recommend(userId: string): Promise<any>;
 }
