@@ -12,25 +12,34 @@ export class TagRepository implements ITagRepository {
     });
   }
 
-  async findByUserId(userId: string): Promise<Tag[]> {
+  async findByUserId(userId: string): Promise<any> {
     const tagList = await this.prisma.tag.findMany({
       where: {
         userId: userId,
       },
+      include: {
+        sentence: true,
+      },
     });
 
-    const grouped = {};
-    tagList.forEach(data => {
-      const key = data.name;
-      if (!grouped[key]) {
-        grouped[key] = [];
+    const transformedData = tagList.reduce((acc, tag) => {
+      let tagData = acc.find((t) => t.name === tag.name);
+
+      if (!tagData) {
+        tagData = {
+          name: tag.name,
+          createdAt: tag.createdAt.toISOString().split('T')[0], // Assuming 'createdAt' is a Date object
+          sentence_id_list: [],
+        };
+        acc.push(tagData);
       }
-      grouped[key].push(data);
-    });
 
-    console.log(grouped)
+      tagData.sentence_id_list.push(tag.sentence.seq); // Assuming 'seq' is the sentence ID
 
-    return tagList
+      return acc;
+    }, []);
+
+    return transformedData;
   }
 
   count(userId: string) {
