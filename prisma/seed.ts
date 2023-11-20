@@ -17,6 +17,8 @@ async function createUser() {
       macId: 'macId1',
       nickname: 'Alice',
       id: '85322046-2031-4fcf-843d-3d8cb1347ed9',
+      refreshToken:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg1MzIyMDQ2LTIwMzEtNGZjZi04NDNkLTNkOGNiMTM0N2VkOSIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjozNjE2MjM5MDYyfQ.qwxtPnc4QKlUKYSuiIAAjll_HFFb3ibnjJu6k0pVywI',
     },
   ];
 

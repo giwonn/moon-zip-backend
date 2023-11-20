@@ -12,10 +12,20 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  findOne(macId: string) {
+  findOne(userId: string) {
     return this.prisma.user.findFirst({
       where: {
-        macId,
+        id: userId,
+      },
+    });
+  }
+  findUserIdByRefreshToken(refreshToken: string) {
+    return this.prisma.user.findUnique({
+      select: {
+        id: true,
+      },
+      where: {
+        refreshToken,
       },
     });
   }

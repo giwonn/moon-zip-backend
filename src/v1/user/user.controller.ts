@@ -24,12 +24,12 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
-  @Get('/mac-id/:macId')
+  @Get('/user-id/:userId')
   @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: User })
   // @ApiNotFoundResponse({ type: UserError })
-  async findOne(@Param('macId') macId: string) {
-    return await this.userService.findOne(macId);
+  async findOneByUserId(@Param('userId') userId: string) {
+    return await this.userService.findOne(userId);
   }
 
   // @Patch(':id')

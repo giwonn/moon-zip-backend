@@ -6,6 +6,7 @@ import { BookModule } from './v1/book/book.module';
 import { SentenceModule } from './v1/sentence/sentence.module';
 import { TagModule } from './v1/tag/tag.module';
 import { LibraryModule } from './v1/library/library.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,7 +17,8 @@ import { LibraryModule } from './v1/library/library.module';
     BookModule,
     SentenceModule,
     TagModule,
-    LibraryModule
+    LibraryModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
