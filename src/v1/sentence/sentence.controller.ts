@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Inject, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Inject,
+  Headers,
+} from '@nestjs/common';
 import { ISentenceService } from './port/in/sentence.service.interface';
 import { CreateSentenceDto } from './dto/create-sentence.dto';
 import {
@@ -20,7 +28,10 @@ export class SentenceController {
   @Post()
   @ApiOperation({ summary: '문장 생성' })
   @ApiCreatedResponse({ type: Sentence })
-  async create(@Headers('token') token: string, @Body() createSentence: CreateSentenceDto) {
+  async create(
+    @Headers('token') token: string,
+    @Body() createSentence: CreateSentenceDto,
+  ) {
     let validUserId = token; // Validate Logic
     createSentence.userId = validUserId;
     return await this.sentenceService.create(createSentence);
@@ -32,6 +43,14 @@ export class SentenceController {
   async findByUserSeq(@Headers('token') token: string) {
     let validUserId = token; // Validate Logic
     return this.sentenceService.findByUserId(validUserId);
+  }
+
+  @Get('recommend')
+  @ApiOperation({ summary: '추천 문장 조회' })
+  @ApiOkResponse({ type: [Sentence] })
+  async recommend(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.sentenceService.recommend(validUserId);
   }
 
   @Get('count')

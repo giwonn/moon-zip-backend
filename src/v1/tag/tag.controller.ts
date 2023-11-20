@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Inject, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Inject,
+  Headers,
+} from '@nestjs/common';
 import { ITagService } from './port/in/tag.service.interface';
 import { CreateTagDto } from './dto/create-tag.dto';
 import {
@@ -20,7 +28,10 @@ export class TagController {
   @Post()
   @ApiOperation({ summary: '태그 생성' })
   @ApiCreatedResponse({ type: Tag })
-  async create(@Headers('token') token: string, @Body() createTag: CreateTagDto) {
+  async create(
+    @Headers('token') token: string,
+    @Body() createTag: CreateTagDto,
+  ) {
     let validUserId = token; // Validate Logic
     createTag.userId = validUserId;
 
@@ -34,6 +45,14 @@ export class TagController {
   async findByUserSeq(@Headers('token') token: string) {
     let validUserId = token; // Validate Logic
     return this.tagService.findByUserId(validUserId);
+  }
+
+  @Get('detail/:name')
+  @ApiOperation({ summary: '태그 상세 조회' })
+  @ApiOkResponse({ type: Tag })
+  async findOne(@Headers('token') token: string, @Param('name') name: string) {
+    let validUserId = token; // Validate Logic
+    return await this.tagService.findOne(validUserId, name);
   }
 
   @Get('count')
