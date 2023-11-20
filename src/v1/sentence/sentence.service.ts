@@ -17,6 +17,10 @@ export class SentenceService {
     return this.sentenceRepository.findByUserId(userId);
   }
 
+  async recommend(userId: string) {
+    return await this.sentenceRepository.recommend(userId);
+  }
+
   async count(userId: string) {
     return await this.sentenceRepository.count(userId);
   }
