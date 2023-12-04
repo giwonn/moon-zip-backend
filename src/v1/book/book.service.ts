@@ -32,7 +32,7 @@ class BookSearchClient {
       return data['documents'];
       // return response.data['documents'];
     } catch (error) {
-      console.log(error)
+      console.log(error);
       // console.error(error);
       return 'Err';
     }
@@ -52,8 +52,8 @@ export class BookService {
     );
   }
 
-  async create(CreateBookDto: CreateBookDto) {
-    return await this.bookRepository.create(CreateBookDto.to());
+  async create(CreateBookDto: CreateBookDto, userId: string) {
+    return await this.bookRepository.create(CreateBookDto.to(), userId);
   }
 
   async search(target: string, query: string) {

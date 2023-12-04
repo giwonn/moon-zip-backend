@@ -6,6 +6,7 @@ import {
   Param,
   Inject,
   ParseEnumPipe,
+  Headers,
 } from '@nestjs/common';
 import { IBookService } from './port/in/book.service.interface';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -29,7 +30,11 @@ export class BookController {
   @Post()
   @ApiOperation({ summary: '도서 생성' })
   @ApiCreatedResponse({ type: Book })
-  async create(@Body() createBookDto: CreateBookDto) {
+  async create(
+    @Headers('token') token: string,
+    @Body() createBookDto: CreateBookDto,
+  ) {
+    let validUserId = token; // Validate Logic
     const res = await this.bookService.search('isbn', createBookDto.id);
     const book = res[0];
 
@@ -69,7 +74,7 @@ export class BookController {
     createBookDto.url = url;
     createBookDto.id = isbn;
 
-    return await this.bookService.create(createBookDto);
+    return await this.bookService.create(createBookDto, validUserId);
   }
 
   @Get(':target/:query')
