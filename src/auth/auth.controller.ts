@@ -7,6 +7,9 @@ export class AuthController {
     @Inject('AuthService') private readonly authService: IAuthService,
   ) {}
 
+  @Post('login')
+  async login(@Headers('authorization') rawCredentials: string) {}
+
   @Post('token/access')
   async rotateAccessToken(@Headers('authorization') rawRefreshToken: string) {
     const token = this.authService.extractTokenFromHeader(rawRefreshToken);

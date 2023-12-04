@@ -30,10 +30,13 @@ export class AuthService implements IAuthService {
    */
 
   // userId만 payload로 제공
-  private signToken(payload = {}, expiresIn = '1m') {
-    return this.jwtService.sign(payload, {
+  private signToken(params?: {
+    payload?: Record<string, any>;
+    expiresIn?: string | number;
+  }) {
+    return this.jwtService.sign(params.payload ?? {}, {
       secret: this.config.get('JWT_SECRET'),
-      expiresIn,
+      expiresIn: params.expiresIn ?? '1m',
     });
   }
 
@@ -42,11 +45,14 @@ export class AuthService implements IAuthService {
       id: user.id,
     };
 
-    return this.signToken(payload);
+    return this.signToken({ payload });
   }
 
   signRefreshToken() {
-    return this.signToken({ type: 'refresh' }, '60d');
+    return this.signToken({
+      payload: { type: 'refresh' },
+      expiresIn: '60d',
+    });
   }
 
   async loginUser(user: UserInfo) {
