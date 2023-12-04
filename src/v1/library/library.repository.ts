@@ -11,4 +11,12 @@ export class LibraryRepository implements ILibraryRepository {
       data: library,
     });
   }
+
+  async getBookCount(userId: string) {
+    return await this.prisma.library.count({
+      where: {
+        userId,
+      },
+    });
+  }
 }
