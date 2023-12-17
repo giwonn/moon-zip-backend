@@ -1,16 +1,28 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { IUserRepository } from './port/out/user.repository.interface';
+import { PrismaRepository } from '../../client/prisma/prisma.repository';
 import { IUserService } from './port/in/user.service.interface';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject('UserRepository') private readonly userRepository: IUserRepository,
+    private readonly prismaRepository: PrismaRepository,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    return await this.userRepository.create(createUserDto.to());
+    const user = createUserDto.toUserEntity();
+
+    return this.prismaRepository.$transaction(async (tx) => {
+      return tx.user.create({
+        data: user,
+      });
+      // TODO : socialUser도 추가해줘야함
+    });
+
+    // const createdUser = await this.userRepository.create(user);
   }
 
   findOne(userId: string) {

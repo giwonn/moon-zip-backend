@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Builder } from 'builder-pattern';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../entities/user.entity';
@@ -13,31 +13,15 @@ export class CreateUserDto {
   @IsString()
   macId: string;
 
-  @ApiProperty({ example: '김철수' })
+  @ApiProperty()
   @IsString()
-  nickname: string;
+  socialId: string;
 
-  @ApiProperty({ example: 'https://i.imgur.com/6uBt4aT.png', required: false })
+  @ApiProperty()
   @IsString()
-  @IsOptional()
-  imageUrl: string;
+  socialType: string;
 
-  to(): User {
-    return Builder<User>()
-      .id(v4())
-      .macId(this.macId)
-      .email(this.email)
-      .nickname(this.nickname)
-      .imageUrl(this.imageUrl)
-      .build();
+  toUserEntity(): User {
+    return Builder<User>().id(v4()).macId(this.macId).email(this.email).build();
   }
-
-  // static from(user: User) {
-  //   return Builder<CreateUserDto>()
-  //     .seq(user.seq)
-  //     .macId(user.macId)
-  //     .nickname(user.nickname)
-  //     .imageUrl(user.imageUrl)
-  //     .build();
-  // }
 }
