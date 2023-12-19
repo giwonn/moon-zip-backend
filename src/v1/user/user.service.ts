@@ -1,9 +1,9 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { IUserRepository } from './port/out/user.repository.interface';
-import { PrismaRepository } from '../../client/prisma/prisma.repository';
-import { IUserService } from './port/in/user.service.interface';
-import { User } from './entities/user.entity';
+import type { IUserRepository } from './port/out/user.repository.interface';
+import { PrismaRepository } from '@/client/prisma/prisma.repository';
+import type { IUserService } from './port/in/user.service.interface';
+import { User } from '@/v1/user/entities/user.entity';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -20,7 +20,7 @@ export class UserService implements IUserService {
         data: user,
       });
       // TODO : socialUser도 추가해줘야함
-    });
+    }) as Promise<User>; // TODO : 타입 임시 조치
 
     // const createdUser = await this.userRepository.create(user);
   }

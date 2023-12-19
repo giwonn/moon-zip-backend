@@ -1,9 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-
-export enum SNS_TYPE {
-  KAKAO = 'kakao',
-  NAVER = 'naver',
-}
+import { SOCIAL_TYPE } from '@/auth/constant/auth.enum';
 
 export class SocialInfoDto {
   @IsEmail()
@@ -14,9 +10,9 @@ export class SocialInfoDto {
   @IsNotEmpty()
   socialId: string;
 
-  @IsEnum(SNS_TYPE)
+  @IsEnum(SOCIAL_TYPE)
   @IsNotEmpty()
-  socialType: SNS_TYPE;
+  socialType: SOCIAL_TYPE;
 
   @IsUUID()
   @IsNotEmpty()

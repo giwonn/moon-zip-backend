@@ -1,4 +1,4 @@
-import { User } from '../../entities/user.entity';
+import { User } from '@prisma/client';
 import { CreateUserDto } from '../../dto/create-user.dto';
 
 export interface IUserService {

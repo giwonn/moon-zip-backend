@@ -3,7 +3,7 @@ import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { User } from '@/v1/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import type { IAuthService } from '@/auth/port/in/auth.service.interface';
-import type { IUserService } from '@/v1/user/port/in/user.service.interface';
+import { IUserRepository } from '@/v1/user/port/out/user.repository.interface';
 
 type UserInfo = Pick<User, 'id'>;
 
@@ -12,7 +12,7 @@ export class AuthService implements IAuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    @Inject('UserService') private readonly userService: IUserService,
+    @Inject('UserRepository') private readonly userRepository: IUserRepository,
   ) {}
 
   /**
@@ -99,7 +99,7 @@ export class AuthService implements IAuthService {
     this.verifyToken(token);
 
     // TODO : 2. db에 리프레쉬 토큰 있는지 조회
-    const user = await this.userService.verifyByToken(token);
+    const user = await this.userRepository.findUserIdByRefreshToken(token);
 
     return {
       accessToken: this.signAccessToken({ id: user.id }),
@@ -112,7 +112,7 @@ export class AuthService implements IAuthService {
     this.verifyToken(token);
 
     // TODO : 2. db에 리프레쉬 토큰 있는지 조회
-    const user = await this.userService.verifyByToken(token);
+    const user = await this.userRepository.findUserIdByRefreshToken(token);
 
     return this.loginUser(user);
   }

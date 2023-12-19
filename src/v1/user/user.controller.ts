@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Inject,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
 import type { IUserService } from './port/in/user.service.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
@@ -17,7 +8,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
-import { SocialTokenGuard } from '@/auth/guard/social-token.guard';
 
 @Controller('user')
 @ApiTags('user')
@@ -32,11 +22,6 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
-  @Post('test')
-  @UseGuards(SocialTokenGuard)
-  async test() {
-    return 'test';
-  }
 
   @Get('/user-id/:userId')
   @ApiOperation({ summary: '유저 조회' })
@@ -46,13 +31,13 @@ export class UserController {
     return await this.userService.findOne(userId);
   }
 
-  @Get()
-  @ApiOperation({ summary: '유저 조회' })
-  @ApiOkResponse({ type: User })
-  // @ApiNotFoundResponse({ type: UserError })
-  async findOness(@Req() req) {
-    // return await this.userService.findOne(macId);
-  }
+  // @Get()
+  // @ApiOperation({ summary: '유저 조회' })
+  // @ApiOkResponse({ type: User })
+  // // @ApiNotFoundResponse({ type: UserError })
+  // async findOness(@Req() req) {
+  //   // return await this.userService.findOne(macId);
+  // }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

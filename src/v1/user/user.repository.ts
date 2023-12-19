@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaRepository } from '../../client/prisma/prisma.repository';
-import { User } from './entities/user.entity';
+import { PrismaRepository } from '@/client/prisma/prisma.repository';
 import { IUserRepository } from './port/out/user.repository.interface';
-
+import { User } from '@prisma/client';
 @Injectable()
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaRepository) {}
@@ -25,7 +24,9 @@ export class UserRepository implements IUserRepository {
         id: true,
       },
       where: {
-        refreshToken,
+        // refreshToken,
+        //TODO : refresh token으로 조회하는 로직 추가해야하는데.. 이거 레디스로 바꿔야하지않나?
+        id: '11',
       },
     });
   }
