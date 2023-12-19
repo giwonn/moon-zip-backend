@@ -1,9 +1,9 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
-import { User } from '../v1/user/entities/user.entity';
+import { User } from '@/v1/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
-import { IAuthService } from './port/in/auth.service.interface';
-import { IUserService } from '../v1/user/port/in/user.service.interface';
+import type { IAuthService } from '@/auth/port/in/auth.service.interface';
+import type { IUserService } from '@/v1/user/port/in/user.service.interface';
 
 type UserInfo = Pick<User, 'id'>;
 
@@ -11,7 +11,7 @@ type UserInfo = Pick<User, 'id'>;
 export class AuthService implements IAuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly config: ConfigService,
+    private readonly configService: ConfigService,
     @Inject('UserService') private readonly userService: IUserService,
   ) {}
 
@@ -35,7 +35,7 @@ export class AuthService implements IAuthService {
     expiresIn?: string | number;
   }) {
     return this.jwtService.sign(params.payload ?? {}, {
-      secret: this.config.get('JWT_SECRET'),
+      secret: this.configService.get('JWT_SECRET'),
       expiresIn: params.expiresIn ?? '1m',
     });
   }
@@ -83,7 +83,7 @@ export class AuthService implements IAuthService {
   verifyToken(token: string) {
     try {
       return this.jwtService.verify(token, {
-        secret: this.config.get('JWT_SECRET'),
+        secret: this.configService.get('JWT_SECRET'),
       });
     } catch (e) {
       if (e instanceof TokenExpiredError) {
