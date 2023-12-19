@@ -4,7 +4,7 @@ import type { SOCIAL_TYPE } from '@/auth/constant/auth.enum';
 @Injectable()
 export class SocialAuthContext {
   async authenticate(socialType: SOCIAL_TYPE, socialId: string) {
-    const strategy: Record<SOCIAL_TYPE, (_: string) => Promise<boolean>> = {
+    const strategy: Record<SOCIAL_TYPE, (_: string) => Promise<number>> = {
       kakao: this.kakaoAuthenticate,
       naver: this.naverAuthenticate,
     };
@@ -21,10 +21,10 @@ export class SocialAuthContext {
       },
     });
 
-    return result.ok;
+    return result.status;
   }
 
   async naverAuthenticate(socialId: string) {
-    return false;
+    return 400;
   }
 }

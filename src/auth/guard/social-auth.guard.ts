@@ -1,8 +1,11 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
+  HttpException,
   Inject,
   Injectable,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
@@ -21,14 +24,26 @@ export class SocialAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { socialType, socialId } = await this.getLoginInfo(request.body);
 
-    const authenticatedBySocialAuth = await this.socialAuthContext.authenticate(
+    const authenticationStatusCode = await this.socialAuthContext.authenticate(
       socialType,
       socialId,
     );
 
-    if (!authenticatedBySocialAuth) {
-      throw new UnauthorizedException(
-        `소셜 로그인 동의를 하지 않은 ${socialType} 계정입니다.`,
+    // TODO : 이것도 따로 나눠야할듯... 로직 한가운데 들어갈만한 코드는 아님
+    const error = {
+      400: `${socialType} 소셜 로그인을 실패하였습니다.`,
+      401: `${socialType} API 호출 인증 오류`,
+      403: `${socialType} API 권한 부족으로 인한 요청 거절`,
+      500: `${socialType} 서버와 통신이 원활하지 않습니다. 다른 소셜로그인을 이용해주세요.`,
+      502: `${socialType} 서버와 통신이 원활하지 않습니다. 다른 소셜로그인을 이용해주세요.`,
+      503: `${socialType} 서버와 통신이 원활하지 않습니다. 다른 소셜로그인을 이용해주세요.`,
+    };
+
+    // TODO : Exception도 필터 추가해서 일원화해줘야함.
+    if (error[authenticationStatusCode]) {
+      new HttpException(
+        error[authenticationStatusCode],
+        authenticationStatusCode,
       );
     }
 
