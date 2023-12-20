@@ -1,11 +1,21 @@
-import { Controller, Headers, Inject, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  Inject,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { IAuthService } from './port/in/auth.service.interface';
 import { SocialAuthGuard } from '@/auth/guard/social-auth.guard';
+import { IUserService } from '@/v1/user/port/in/user.service.interface';
+import { SocialUserDto } from '@/v1/user/dto/social-user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     @Inject('AuthService') private readonly authService: IAuthService,
+    @Inject('UserService') private readonly userService: IUserService,
   ) {}
 
   // TODO : 기존 / 신규 유저 판단 후
@@ -13,7 +23,11 @@ export class AuthController {
   // TODO : 신규 유저 - 유저정보 create 후 토큰 발급하여 리턴
   @Post('login')
   @UseGuards(SocialAuthGuard) // 로그인 요청 받으면 guard로 socialId로 유효한 소셜로그인 정보인지 검증
-  async login() {}
+  async login(@Body() socialUserDto: SocialUserDto) {
+    const user = await this.userService.findOne(socialUserDto.email);
+
+    // 만약 유저가 있다면
+  }
 
   @Post('token/access')
   async rotateAccessToken(@Headers('authorization') rawRefreshToken: string) {

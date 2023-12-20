@@ -23,6 +23,8 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
+  // TODO: 로그인한 유저가 소셜 연동 추가하고 싶은 경우
+
   @Get('/user-id/:userId')
   @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: User })

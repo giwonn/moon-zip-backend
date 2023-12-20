@@ -1,7 +1,7 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { SOCIAL_TYPE } from '@/auth/constant/auth.enum';
 
-export class SocialInfoDto {
+export class SocialUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;

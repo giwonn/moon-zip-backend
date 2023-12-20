@@ -2,7 +2,8 @@ import { User } from '@prisma/client';
 
 export interface IUserRepository {
   create(user: User): Promise<User>;
-  findOne(userId: string): Promise<User | null>;
+  findOneById(userId: string): Promise<User | null>;
+  findOneByEmail(email: string): Promise<User | null>;
   findUserIdByRefreshToken(
     refreshToken: string,
   ): Promise<Pick<User, 'id' | null>>;

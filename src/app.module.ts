@@ -10,7 +10,6 @@ import { AuthModule } from '@/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      cache: true,
       isGlobal: true,
     }),
     PrismaModule,

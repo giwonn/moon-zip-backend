@@ -11,13 +11,24 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  findOne(userId: string) {
-    return this.prisma.user.findFirst({
+  findOneById(userId: string) {
+    return this.prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
   }
+
+  findOneByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+  }
+
+  findOneWithSocialInfoByEmail(email: string) {}
+
   findUserIdByRefreshToken(refreshToken: string) {
     return this.prisma.user.findUnique({
       select: {

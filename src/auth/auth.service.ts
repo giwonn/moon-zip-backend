@@ -4,6 +4,7 @@ import { User } from '@/v1/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import type { IAuthService } from '@/auth/port/in/auth.service.interface';
 import { IUserRepository } from '@/v1/user/port/out/user.repository.interface';
+import { SocialUserDto } from '@/v1/user/dto/social-user.dto';
 
 type UserInfo = Pick<User, 'id'>;
 
@@ -28,6 +29,10 @@ export class AuthService implements IAuthService {
    *
    * 5. authenticateWithEmail
    */
+
+  async login(socialUserDto: SocialUserDto) {
+    // const user = this.userRepository.findOneByEmail(socialUserDto.email);
+  }
 
   // userId만 payload로 제공
   private signToken(params?: {
@@ -115,5 +120,22 @@ export class AuthService implements IAuthService {
     const user = await this.userRepository.findUserIdByRefreshToken(token);
 
     return this.loginUser(user);
+  }
+
+  async kakaoAuthenticate(socialId: string) {
+    const uri = `https://kapi.kakao.com/v2/user/me?target_id=${socialId}&target_id_type=user_id`;
+    console.log(this.configService);
+    const result = await fetch(uri, {
+      headers: {
+        Authorization: `KakaoAK ${this.configService.get('KAKAO_ADMIN_KEY')}`,
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      },
+    });
+
+    return result.status;
+  }
+
+  async naverAuthenticate(socialId: string) {
+    return 400;
   }
 }

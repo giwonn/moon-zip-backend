@@ -25,8 +25,12 @@ export class UserService implements IUserService {
     // const createdUser = await this.userRepository.create(user);
   }
 
+  async findOneWithSocialInfoByEmail(email: string) {
+    // await this.userRepository.findOneWithSocialInfoByEmail(email);
+  }
+
   findOne(userId: string) {
-    return this.userRepository.findOne(userId);
+    return this.userRepository.findOneById(userId);
   }
 
   async verifyByToken(refreshToken: string) {
