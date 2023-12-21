@@ -6,5 +6,5 @@ export class Library implements PrismaLibrary {
   @ApiProperty({ example: '9788996991342' })
   bookId: string;
   createdAt: Date;
-  deletedAt: Date;
+  deletedAt: Date | null;
 }

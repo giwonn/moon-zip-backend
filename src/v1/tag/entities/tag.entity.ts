@@ -10,5 +10,5 @@ export class Tag implements PrismaTag {
   @ApiProperty()
   sentenceSeq: number;
   createdAt: Date;
-  deletedAt: Date;
+  deletedAt: Date | null;
 }
