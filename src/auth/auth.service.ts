@@ -30,15 +30,37 @@ export class AuthService implements IAuthService {
    * 5. authenticateWithEmail
    */
 
-  async login(socialUserDto: SocialUserDto) {
+  async socialLogin(socialUserDto: SocialUserDto) {
+    const user = await this.userRepository.findOneWithSocialInfoByEmail(
+      socialUserDto.email,
+    );
+
+    // 1. 만약 등록되어 있는 유저라면
+    if (user) {
+      const alreadyAddedSocial = user.socialUsers.some(
+        (user) => user.type === socialUserDto.socialType,
+      );
+      // 1-1. 등록된 소셜id가 아니라면 -> 등록된 이메일로 소셜id를 등록
+      if (!alreadyAddedSocial) {
+      }
+      // 1-2. 유저 리턴
+    }
+
+    // 2. 만약 등록된 이메일이 아니라면
+    // 2-1. 이메일과 macId를 user 테이블에 등록
+    // 2-2. user 등록하여 반환받은 userId를 socialId, socialType과 함께 socialUser 테이블에 등록
     // const user = this.userRepository.findOneByEmail(socialUserDto.email);
+
+    return { id: 'test' };
   }
 
   // userId만 payload로 제공
-  private signToken(params?: {
-    payload?: Record<string, any>;
-    expiresIn?: string | number;
-  }) {
+  private signToken(
+    params: {
+      payload?: Record<string, any>;
+      expiresIn?: string | number;
+    } = {},
+  ) {
     return this.jwtService.sign(params.payload ?? {}, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: params.expiresIn ?? '1m',
@@ -104,10 +126,18 @@ export class AuthService implements IAuthService {
     this.verifyToken(token);
 
     // TODO : 2. db에 리프레쉬 토큰 있는지 조회
+
+    // TODO : 이거 redis로 바꿔야함
     const user = await this.userRepository.findUserIdByRefreshToken(token);
 
+    if (!user) throw new UnauthorizedException('로그인이 만료되었습니다.');
+
+    const accessToken = this.signAccessToken({ id: user.id });
+    const refreshToken = this.signRefreshToken();
+
     return {
-      accessToken: this.signAccessToken({ id: user.id }),
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -118,24 +148,12 @@ export class AuthService implements IAuthService {
 
     // TODO : 2. db에 리프레쉬 토큰 있는지 조회
     const user = await this.userRepository.findUserIdByRefreshToken(token);
+    if (!user)
+      return {
+        accessToken: 'test',
+        refreshToken: 'test',
+      };
 
     return this.loginUser(user);
-  }
-
-  async kakaoAuthenticate(socialId: string) {
-    const uri = `https://kapi.kakao.com/v2/user/me?target_id=${socialId}&target_id_type=user_id`;
-    console.log(this.configService);
-    const result = await fetch(uri, {
-      headers: {
-        Authorization: `KakaoAK ${this.configService.get('KAKAO_ADMIN_KEY')}`,
-        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-      },
-    });
-
-    return result.status;
-  }
-
-  async naverAuthenticate(socialId: string) {
-    return 400;
   }
 }

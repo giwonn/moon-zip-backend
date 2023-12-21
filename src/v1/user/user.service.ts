@@ -26,7 +26,7 @@ export class UserService implements IUserService {
   }
 
   async findOneWithSocialInfoByEmail(email: string) {
-    // await this.userRepository.findOneWithSocialInfoByEmail(email);
+    return await this.userRepository.findOneWithSocialInfoByEmail(email);
   }
 
   findOne(userId: string) {

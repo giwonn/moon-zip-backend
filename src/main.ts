@@ -3,9 +3,10 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
+import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
 
 async function bootstrap() {
-  let httpsOptions = null;
+  let httpsOptions: HttpsOptions | undefined;
   if (process.env.SSL === 'true') {
     httpsOptions = {
       key: fs.readFileSync(`${process.cwd()}/dist/privkey.pem`),

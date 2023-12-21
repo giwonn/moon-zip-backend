@@ -1,6 +1,5 @@
 import {
   HttpException,
-  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,14 +7,11 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { SocialUserDto } from '@/v1/user/dto/social-user.dto';
 import { SOCIAL_TYPE } from '@/auth/constant/auth.enum';
-import { AuthService } from '@/auth/auth.service';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 
 @Injectable()
 export class SocialAuthGuard implements CanActivate {
-  constructor(
-    @Inject('AuthService') private readonly authService: AuthService, // TODO : 인터페이스 분리해야함
-  ) {}
+  constructor() {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
@@ -53,7 +49,7 @@ export class SocialAuthGuard implements CanActivate {
     const errors = await validate(loginInfoDto);
     if (errors.length > 0) {
       throw new UnauthorizedException(
-        errors.flatMap((error) => Object.values(error.constraints)),
+        errors.flatMap((error) => Object.values(error.constraints ?? {})),
       );
     }
 
@@ -61,10 +57,26 @@ export class SocialAuthGuard implements CanActivate {
   }
   async authenticate(socialType: SOCIAL_TYPE, socialId: string) {
     const strategy: Record<SOCIAL_TYPE, (_: string) => Promise<number>> = {
-      kakao: this.authService.kakaoAuthenticate,
-      naver: this.authService.naverAuthenticate,
+      kakao: this.kakaoAuthenticate,
+      naver: this.naverAuthenticate,
     };
 
     return await strategy[socialType](socialId);
+  }
+
+  async kakaoAuthenticate(socialId: string) {
+    const uri = `https://kapi.kakao.com/v2/user/me?target_id=${socialId}&target_id_type=user_id`;
+    const result = await fetch(uri, {
+      headers: {
+        Authorization: `KakaoAK ${process.env.KAKAO_ADMIN_KEY}`,
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      },
+    });
+
+    return result.status;
+  }
+
+  async naverAuthenticate(socialId: string) {
+    return 400;
   }
 }
