@@ -7,6 +7,7 @@ import { SentenceModule } from './v1/sentence/sentence.module';
 import { TagModule } from './v1/tag/tag.module';
 import { LibraryModule } from './v1/library/library.module';
 import { AuthModule } from '@/auth/auth.module';
+import { SocialUserModule } from './social-user/social-user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,6 +20,7 @@ import { AuthModule } from '@/auth/auth.module';
     TagModule,
     LibraryModule,
     AuthModule,
+    SocialUserModule,
   ],
 })
 export class AppModule {}

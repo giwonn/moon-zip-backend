@@ -1,7 +1,6 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import type { IUserRepository } from './port/out/user.repository.interface';
-import { PrismaRepository } from '@/client/prisma/prisma.repository';
 import type { IUserService } from './port/in/user.service.interface';
 import { User } from '@/v1/user/entities/user.entity';
 
@@ -9,24 +8,15 @@ import { User } from '@/v1/user/entities/user.entity';
 export class UserService implements IUserService {
   constructor(
     @Inject('UserRepository') private readonly userRepository: IUserRepository,
-    private readonly prismaRepository: PrismaRepository,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     const user = createUserDto.toUserEntity();
-
-    return this.prismaRepository.$transaction(async (tx) => {
-      return tx.user.create({
-        data: user,
-      });
-      // TODO : socialUser도 추가해줘야함
-    }) as Promise<User>; // TODO : 타입 임시 조치
-
-    // const createdUser = await this.userRepository.create(user);
+    return await this.userRepository.create(user);
   }
 
-  async findOneWithSocialInfoByEmail(email: string) {
-    return await this.userRepository.findOneWithSocialInfoByEmail(email);
+  async findOneByEmail(email: string): Promise<User | null> {
+    return await this.userRepository.findOneByEmail(email);
   }
 
   findOne(userId: string) {
@@ -34,9 +24,8 @@ export class UserService implements IUserService {
   }
 
   async verifyByToken(refreshToken: string) {
-    const user = await this.userRepository.findUserIdByRefreshToken(
-      refreshToken,
-    );
+    const user =
+      await this.userRepository.findUserIdByRefreshToken(refreshToken);
     if (!user)
       throw new UnauthorizedException('토큰으로 조회 가능한 유저가 없습니다.');
 

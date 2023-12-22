@@ -12,8 +12,6 @@ export class User implements PrismaUser {
   nickname: string | null;
   @ApiProperty({ required: false })
   imageUrl: string | null;
-  @ApiProperty({ required: false })
-  refreshToken: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;

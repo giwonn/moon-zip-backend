@@ -2,9 +2,11 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { User } from '@/v1/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
+import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
+import { CreateSocialUserDto } from '@/v1/social-user/dto/create-social-user.dto';
 import type { IAuthService } from '@/auth/port/in/auth.service.interface';
-import { IUserRepository } from '@/v1/user/port/out/user.repository.interface';
-import { SocialUserDto } from '@/v1/user/dto/social-user.dto';
+import type { IUserService } from '@/v1/user/port/in/user.service.interface';
+import type { ISocialUserService } from '@/v1/social-user/port/social-user.service.interface';
 
 type UserInfo = Pick<User, 'id'>;
 
@@ -13,7 +15,9 @@ export class AuthService implements IAuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    @Inject('UserRepository') private readonly userRepository: IUserRepository,
+    @Inject('UserService') private readonly userService: IUserService,
+    @Inject('SocialUserService')
+    private readonly socialUserService: ISocialUserService,
   ) {}
 
   /**
@@ -30,28 +34,26 @@ export class AuthService implements IAuthService {
    * 5. authenticateWithEmail
    */
 
-  async socialLogin(socialUserDto: SocialUserDto) {
-    const user = await this.userRepository.findOneWithSocialInfoByEmail(
-      socialUserDto.email,
-    );
-
-    // 1. 만약 등록되어 있는 유저라면
-    if (user) {
-      const alreadyAddedSocial = user.socialUsers.some(
-        (user) => user.type === socialUserDto.socialType,
-      );
-      // 1-1. 등록된 소셜id가 아니라면 -> 등록된 이메일로 소셜id를 등록
-      if (!alreadyAddedSocial) {
-      }
-      // 1-2. 유저 리턴
+  async socialLogin(createUserDto: CreateUserDto) {
+    let user = await this.userService.findOneByEmail(createUserDto.email);
+    if (user === null) {
+      user = await this.userService.create(createUserDto);
     }
 
-    // 2. 만약 등록된 이메일이 아니라면
-    // 2-1. 이메일과 macId를 user 테이블에 등록
-    // 2-2. user 등록하여 반환받은 userId를 socialId, socialType과 함께 socialUser 테이블에 등록
-    // const user = this.userRepository.findOneByEmail(socialUserDto.email);
+    const isRegisteredBySocial = await this.socialUserService.checkRegistered(
+      user.id,
+      createUserDto.socialType,
+    );
+    if (!isRegisteredBySocial) {
+      const createSocialUserDto = CreateSocialUserDto.from({
+        userId: user.id,
+        type: createUserDto.socialType,
+        id: createUserDto.socialId,
+      });
+      await this.socialUserService.create(createSocialUserDto);
+    }
 
-    return { id: 'test' };
+    return { userId: user.id };
   }
 
   // userId만 payload로 제공
@@ -128,16 +130,21 @@ export class AuthService implements IAuthService {
     // TODO : 2. db에 리프레쉬 토큰 있는지 조회
 
     // TODO : 이거 redis로 바꿔야함
-    const user = await this.userRepository.findUserIdByRefreshToken(token);
+    // const user = await this.userRepository.findUserIdByRefreshToken(token);
 
-    if (!user) throw new UnauthorizedException('로그인이 만료되었습니다.');
+    // if (!user) throw new UnauthorizedException('로그인이 만료되었습니다.');
 
-    const accessToken = this.signAccessToken({ id: user.id });
-    const refreshToken = this.signRefreshToken();
+    // const accessToken = this.signAccessToken({ id: user.id });
+    // const refreshToken = this.signRefreshToken();
+    //
+    // return {
+    //   accessToken,
+    //   refreshToken,
+    // };
 
     return {
-      accessToken,
-      refreshToken,
+      accessToken: 'test',
+      refreshToken: 'test',
     };
   }
 
@@ -146,14 +153,15 @@ export class AuthService implements IAuthService {
     // TODO : 1. refreshToken 검증 하여
     this.verifyToken(token);
 
-    // TODO : 2. db에 리프레쉬 토큰 있는지 조회
-    const user = await this.userRepository.findUserIdByRefreshToken(token);
-    if (!user)
-      return {
-        accessToken: 'test',
-        refreshToken: 'test',
-      };
-
-    return this.loginUser(user);
+    // TODO : 2. db에 리프레쉬 토큰 있는지 조회 -> 레디스로 변경 예정
+    // const user = await this.userRepository.findUserIdByRefreshToken(token);
+    // if (!user)
+    //   return {
+    //     accessToken: 'test',
+    //     refreshToken: 'test',
+    //   };
+    //
+    // return this.loginUser(user);
+    return null as any;
   }
 }

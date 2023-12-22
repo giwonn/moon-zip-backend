@@ -11,8 +11,8 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  findOneById(userId: string) {
-    return this.prisma.user.findUnique({
+  async findOneById(userId: string) {
+    return await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
@@ -25,14 +25,13 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  findOneWithSocialInfoByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: { email },
-      include: {
+  findOneBySocialIdAndSocialType(socialId: string, socialType: string) {
+    return this.prisma.user.findFirst({
+      where: {
         socialUsers: {
-          select: {
-            id: true,
-            type: true,
+          some: {
+            id: socialId,
+            type: socialType,
           },
         },
       },

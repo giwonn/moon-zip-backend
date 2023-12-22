@@ -43,15 +43,14 @@ model Sentence {
 }
 
 model User {
-  id           String    @id(map: "user_pk") @db.Uuid
-  email        String    @unique(map: "email_uk") @db.VarChar(50)
-  macId        String    @unique(map: "mac_id_uk") @map("mac_id") @db.VarChar(100)
-  nickname     String?   @db.VarChar(20)
-  imageUrl     String?   @map("image_url") @db.VarChar
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt    DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
-  deletedAt    DateTime? @map("deleted_at") @db.Timestamp(6)
-  refreshToken String    @unique(map: "refresh_token_uk") @map("refresh_token") @db.VarChar(200)
+  id        String    @id(map: "user_pk") @db.Uuid
+  email     String    @unique(map: "email_uk") @db.VarChar(50)
+  macId     String    @unique(map: "mac_id_uk") @map("mac_id") @db.VarChar(100)
+  nickname  String?   @db.VarChar(20)
+  imageUrl  String?   @map("image_url") @db.VarChar
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
 
   socialUsers SocialUser[]
 
@@ -59,13 +58,14 @@ model User {
 }
 
 model SocialUser {
-  userId String @map("user_id") @db.Uuid
+  userId String @map("user_id")
   type   String @db.VarChar(20)
   id     String @map("id") @db.VarChar(100)
 
   user User @relation(fields: [userId], references: [id])
 
   @@id([userId, type, id], map: "social_user_pk")
+  @@unique([userId, type])
   @@index([userId])
   @@map("social_user")
 }

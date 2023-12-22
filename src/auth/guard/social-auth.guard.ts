@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { SocialUserDto } from '@/v1/user/dto/social-user.dto';
+import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 import { SOCIAL_TYPE } from '@/auth/constant/auth.enum';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 
@@ -44,7 +44,7 @@ export class SocialAuthGuard implements CanActivate {
   }
 
   private async getLoginInfo(body: any) {
-    const loginInfoDto = plainToInstance(SocialUserDto, body);
+    const loginInfoDto = plainToInstance(CreateUserDto, body);
 
     const errors = await validate(loginInfoDto);
     if (errors.length > 0) {

@@ -1,5 +1,4 @@
 import { User } from '@/v1/user/entities/user.entity';
-import { UserWithSocial } from '@/v1/user/entities/user-with-social.entity';
 
 export interface IUserRepository {
   create(user: User): Promise<User>;
@@ -8,7 +7,10 @@ export interface IUserRepository {
   findUserIdByRefreshToken(
     refreshToken: string,
   ): Promise<Pick<User, 'id'> | null>;
-  findOneWithSocialInfoByEmail(email: string): Promise<UserWithSocial | null>;
+  findOneBySocialIdAndSocialType(
+    socialId: string,
+    socialType: string,
+  ): Promise<User | null>;
 
   // abstract update(id: number, user: UserEntity): Promise<UserEntity>;
   // abstract remove(id: number): Promise<UserEntity>;
