@@ -8,14 +8,12 @@ import {
 } from '@nestjs/common';
 import { IAuthService } from './port/in/auth.service.interface';
 import { SocialAuthGuard } from '@/auth/guard/social-auth.guard';
-import { IUserService } from '@/v1/user/port/in/user.service.interface';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     @Inject('AuthService') private readonly authService: IAuthService,
-    @Inject('UserService') private readonly userService: IUserService,
   ) {}
 
   // TODO : 기존 / 신규 유저 판단 후
@@ -27,8 +25,10 @@ export class AuthController {
     // 유저 로그인 or 회원가입
     const user = await this.authService.socialLogin(createUserDto);
     // 반환된 유저에 대한 토큰 발급
-    this.authService.signAccessToken(user);
-    this.authService.signRefreshToken();
+    return {
+      accessToken: this.authService.signAccessToken(user),
+      refreshToken: this.authService.signRefreshToken(),
+    };
   }
 
   @Post('token/access')

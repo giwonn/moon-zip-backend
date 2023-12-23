@@ -11,5 +11,7 @@ export interface IAuthService {
   decodeToken(base64String: string): string;
   signAccessToken(payload: any): string;
   signRefreshToken(): string;
-  socialLogin(createUserDto: CreateUserDto): Promise<{ userId: User['id'] }>;
+  socialLogin(
+    createUserDto: CreateUserDto,
+  ): Promise<Pick<User, 'id' | 'nickname' | 'email' | 'imageUrl'>>;
 }

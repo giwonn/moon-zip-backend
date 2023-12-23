@@ -8,7 +8,7 @@ import type { IAuthService } from '@/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
 import type { ISocialUserService } from '@/v1/social-user/port/social-user.service.interface';
 
-type UserInfo = Pick<User, 'id'>;
+type UserInfo = Pick<User, 'id' | 'nickname' | 'email' | 'imageUrl'>;
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -21,8 +21,7 @@ export class AuthService implements IAuthService {
   ) {}
 
   /**
-   * 1. auth/login -> checkSnsToken
-   * 2. token의 이메일의 유저가 없다면 register, 있다면 login
+   * 1. auth/login -> social-auth 가드
    * 2-1. registerWithEmail
    *   - 생성이 완료되면 access, refresh 토큰을 반환한다.
    * 2-2. loginWithEmail
@@ -53,7 +52,12 @@ export class AuthService implements IAuthService {
       await this.socialUserService.create(createSocialUserDto);
     }
 
-    return { userId: user.id };
+    return {
+      id: user.id,
+      nickname: user.nickname,
+      email: user.email,
+      imageUrl: user.imageUrl,
+    };
   }
 
   // userId만 payload로 제공
@@ -70,11 +74,7 @@ export class AuthService implements IAuthService {
   }
 
   signAccessToken(user: UserInfo) {
-    const payload = {
-      id: user.id,
-    };
-
-    return this.signToken({ payload });
+    return this.signToken({ payload: user });
   }
 
   signRefreshToken() {
@@ -123,9 +123,9 @@ export class AuthService implements IAuthService {
   }
 
   // access token 재발급
-  async rotateAccessToken(token: string) {
+  async rotateAccessToken(refreshToken: string) {
     // TODO : 1. refreshToken 검증 하여
-    this.verifyToken(token);
+    this.verifyToken(refreshToken);
 
     // TODO : 2. db에 리프레쉬 토큰 있는지 조회
 
