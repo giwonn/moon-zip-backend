@@ -1,8 +1,9 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import type { IUserRepository } from './port/out/user.repository.interface';
 import type { IUserService } from './port/in/user.service.interface';
 import { User } from '@/v1/user/entities/user.entity';
+import { UpdateUserDto } from '@/v1/user/dto/update-user.dto';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -23,23 +24,10 @@ export class UserService implements IUserService {
     return this.userRepository.findOneById(userId);
   }
 
-  async verifyByToken(refreshToken: string) {
-    const user =
-      await this.userRepository.findUserIdByRefreshToken(refreshToken);
-    if (!user)
-      throw new UnauthorizedException('토큰으로 조회 가능한 유저가 없습니다.');
-
-    return user;
+  async update(userId: string, updateUserDto: UpdateUserDto) {
+    return await this.userRepository.update(userId, updateUserDto);
   }
 
-  // findOneByRefreshToken(refreshToken: string) {
-  //   return this.userRepository.findOneByRefreshToken(refreshToken);
-  // }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-  //
   // remove(id: number) {
   //   return `This action removes a #${id} user`;
   // }

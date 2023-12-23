@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { PrismaRepository } from '@/client/prisma/prisma.repository';
+import { PrismaRepository } from '@/client/prisma/prisma.repository';
 import type { ISocialUserRepository } from '@/v1/social-user/port/social-user.repository.interface';
 import type { SocialUser } from '@/v1/social-user/entities/social-user.entity';
 @Injectable()

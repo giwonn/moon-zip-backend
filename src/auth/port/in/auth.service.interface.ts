@@ -1,17 +1,11 @@
-import { User } from '@/v1/user/entities/user.entity';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 
+export interface AccessAndRefreshToken {
+  accessToken: string;
+  refreshToken: string;
+}
 export interface IAuthService {
-  extractTokenFromHeader(rawToken: string): string;
-  verifyToken(token: string): string;
-  rotateAccessToken(token: string): Promise<{ accessToken: string }>;
-  rotateRefreshToken(
-    token: string,
-  ): Promise<{ accessToken: string; refreshToken: string }>;
-  decodeToken(base64String: string): string;
-  signAccessToken(payload: any): string;
-  signRefreshToken(): string;
-  socialLogin(
-    createUserDto: CreateUserDto,
-  ): Promise<Pick<User, 'id' | 'nickname' | 'email' | 'imageUrl'>>;
+  socialLogin(createUserDto: CreateUserDto): Promise<AccessAndRefreshToken>;
+  rotateToken(token: string): Promise<AccessAndRefreshToken>;
+  signLoginToken(user: { userId: string }): Promise<AccessAndRefreshToken>;
 }
