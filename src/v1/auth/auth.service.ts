@@ -11,8 +11,6 @@ import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
 import type { ISocialUserService } from '@/v1/social-user/port/social-user.service.interface';
 
-type UserInfo = { userId: string };
-
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
