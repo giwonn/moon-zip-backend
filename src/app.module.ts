@@ -6,21 +6,16 @@ import { BookModule } from '@/v1/book/book.module';
 import { SentenceModule } from '@/v1/sentence/sentence.module';
 import { TagModule } from '@/v1/tag/tag.module';
 import { LibraryModule } from '@/v1/library/library.module';
-import { AuthModule } from '@/auth/auth.module';
+import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
-import { RedisModule } from '@songkeys/nestjs-redis';
+import { RedisModule } from '@/client/redis/redis.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    RedisModule.forRoot({
-      config: {
-        host: process.env.REDIS_HOST,
-        port: Number(process.env.REDIS_PORT),
-        password: process.env.REDIS_PASSWORD,
-      },
-    }),
+    RedisModule,
     PrismaModule,
     UserModule,
     BookModule,

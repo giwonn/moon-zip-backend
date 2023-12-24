@@ -113,7 +113,7 @@ describe('AuthService', () => {
         mockSocialUserService.checkRegistered.mockResolvedValue(true);
 
         // when
-        const result = await authService.socialLogin(createUserDto);
+        const result = await authService.login(user, createUserDto);
 
         // then
         expect(result).toEqual(accessAndRefreshToken);
@@ -124,7 +124,7 @@ describe('AuthService', () => {
         mockSocialUserService.checkRegistered.mockResolvedValue(false);
 
         // when
-        const result = await authService.socialLogin(createUserDto);
+        const result = await authService.login(user, createUserDto);
 
         // then
         expect(result).toEqual(accessAndRefreshToken);
@@ -141,7 +141,7 @@ describe('AuthService', () => {
         mockSocialUserService.checkRegistered.mockResolvedValue(false);
 
         // when
-        const result = await authService.socialLogin(createUserDto);
+        const result = await authService.register(createUserDto);
 
         // then
         expect(result).toEqual(accessAndRefreshToken);

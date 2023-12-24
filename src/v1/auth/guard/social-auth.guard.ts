@@ -6,7 +6,7 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
-import { SOCIAL_TYPE } from '@/auth/constant/auth.enum';
+import { SOCIAL_TYPE } from '@/v1/auth/constant/auth.enum';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 
 @Injectable()

@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: ./Dockerfile.dev
       target: development
-    command: npm run start:dev
+    command: npm run ${cmd:-start:dev}
     restart: always
     ports:
       - '3000:3000'

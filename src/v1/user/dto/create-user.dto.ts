@@ -1,9 +1,9 @@
+import { v4 } from 'uuid';
 import { IsString } from 'class-validator';
 import { Builder } from 'builder-pattern';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../entities/user.entity';
-import { v4 } from 'uuid';
-import { SOCIAL_TYPE } from '@/auth/constant/auth.enum';
+import { SOCIAL_TYPE } from '@/v1/auth/constant/auth.enum';
 
 export class CreateUserDto {
   @ApiProperty()

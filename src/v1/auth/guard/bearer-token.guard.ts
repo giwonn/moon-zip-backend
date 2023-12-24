@@ -1,17 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
-import { RedisService } from '@songkeys/nestjs-redis';
+import { RedisService } from '@/client/redis/redis.service';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 abstract class BearerTokenGuard implements CanActivate {
-  private readonly redisClient: ReturnType<RedisService['getClient']>;
   constructor(
     private readonly redisService: RedisService,
     private readonly jwtService: JwtService,
-  ) {
-    this.redisClient = this.redisService.getClient();
-  }
+  ) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
@@ -52,15 +49,12 @@ abstract class BearerTokenGuard implements CanActivate {
         secret: process.env.JWT_SECRET,
       });
     } catch (e) {
+      await this.redisService.deleteToken(token);
+
       if (e instanceof TokenExpiredError) {
         throw new UnauthorizedException('만료된 토큰입니다.');
       }
 
-      // 페이로드가 조작되거나 하는 등 이상한 토큰일 경우
-      const { tokenId } = this.jwtService.decode(token);
-      if (tokenId) {
-        await this.redisClient.del(tokenId);
-      }
       throw new UnauthorizedException('잘못된 토큰입니다.');
     }
   }
