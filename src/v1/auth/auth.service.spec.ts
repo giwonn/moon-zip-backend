@@ -10,17 +10,14 @@ import { ConfigService } from '@nestjs/config';
 import { mockUserService } from '@/v1/user/user.service.mock';
 import { mockSocialUserService } from '@/v1/social-user/social-user.service.mock';
 import type { IAuthService } from './port/in/auth.service.interface';
-import { RedisService } from '@songkeys/nestjs-redis';
+import { RedisService } from '@/client/redis/redis.service';
 import { UnauthorizedException } from '@nestjs/common';
+import { createMockService } from '@/libs/mock';
 
 describe('AuthService', () => {
   let authService: IAuthService;
   let jwtService: JwtService;
-  const redisClient = {
-    get: jest.fn(),
-    setex: jest.fn(),
-    del: jest.fn(),
-  };
+  const mockRedisService = createMockService(RedisService);
   let createUserDto: CreateUserDto;
   let user: User;
   let socialUser: SocialUser;
@@ -77,13 +74,7 @@ describe('AuthService', () => {
         },
         {
           provide: RedisService,
-          useValue: {
-            getClient: jest.fn().mockReturnValue(redisClient),
-          },
-        },
-        {
-          provide: Symbol('REDIS_CLIENT'),
-          useValue: redisClient,
+          useValue: mockRedisService,
         },
         JwtService,
       ],
@@ -99,7 +90,7 @@ describe('AuthService', () => {
     mockSocialUserService.create.mockResolvedValue(socialUser);
     jest
       .spyOn(authService, 'signLoginToken')
-      .mockResolvedValue(accessAndRefreshToken);
+      .mockReturnValue(accessAndRefreshToken);
   });
 
   describe('소셜 로그인', () => {
