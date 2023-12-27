@@ -12,5 +12,4 @@ export interface IAuthService {
   ): Promise<AccessAndRefreshToken>;
   register(createUserDto: CreateUserDto): Promise<AccessAndRefreshToken>;
   rotateToken(token: string): Promise<AccessAndRefreshToken>;
-  signLoginToken(userId: string): AccessAndRefreshToken;
 }

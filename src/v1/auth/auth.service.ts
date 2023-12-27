@@ -1,22 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { v4 } from 'uuid';
-import { RedisService } from '@/client/redis/redis.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { RedisClient } from '@/client/redis/redis.client';
 import { User } from '@/v1/user/entities/user.entity';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 import { CreateSocialUserDto } from '@/v1/social-user/dto/create-social-user.dto';
 import { REFRESH_TOKEN_EXPIRATION_TIME } from '@/v1/auth/constant/token.constant';
 import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
-import type { ISocialUserService } from '@/v1/social-user/port/social-user.service.interface';
+import type { ISocialUserService } from '@/v1/social-user/port/in/social-user.service.interface';
+import { JwtClient } from '@/client/jwt/jwt.client';
 
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-    private readonly redisService: RedisService,
+    private readonly redisClient: RedisClient,
+    private readonly jwtClient: JwtClient,
     @Inject('UserService') private readonly userService: IUserService,
     @Inject('SocialUserService')
     private readonly socialUserService: ISocialUserService,
@@ -46,14 +44,11 @@ export class AuthService implements IAuthService {
     return await this.updateToken(user.id);
   }
 
-  // access token 재발급
   async rotateToken(refreshToken: string) {
-    const userId = await this.redisService.getUserId(refreshToken);
+    const { tokenId } = this.jwtClient.decode(refreshToken);
+    await this.redisClient.deleteByTokenId(tokenId);
 
-    if (refreshToken) {
-      await this.redisService.deleteToken(refreshToken);
-    }
-
+    const userId = await this.redisClient.getUserId(refreshToken);
     return await this.updateToken(userId);
   }
 
@@ -67,38 +62,15 @@ export class AuthService implements IAuthService {
   }
 
   async updateToken(userId: string) {
-    const { accessToken, refreshToken } = this.signLoginToken(userId);
-
-    await this.redisService.addToken(userId, refreshToken);
-
-    return { accessToken, refreshToken };
-  }
-
-  signLoginToken(userId: string) {
     const payload = { userId };
-    const accessToken = this.signToken({ payload });
-    const refreshToken = this.signToken({
+    const accessToken = this.jwtClient.sign({ payload });
+    const refreshToken = this.jwtClient.sign({
       payload: { tokenId: v4() },
       expiresIn: REFRESH_TOKEN_EXPIRATION_TIME,
     });
 
-    return {
-      accessToken,
-      refreshToken,
-    };
-  }
+    await this.redisClient.addToken(userId, refreshToken);
 
-  // userId만 payload로 제공
-  private signToken({
-    payload,
-    expiresIn,
-  }: {
-    payload?: Record<string, any>;
-    expiresIn?: string | number;
-  } = {}) {
-    return this.jwtService.sign(payload ?? {}, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: expiresIn ?? '1m',
-    });
+    return { accessToken, refreshToken };
   }
 }

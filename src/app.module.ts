@@ -9,6 +9,7 @@ import { LibraryModule } from '@/v1/library/library.module';
 import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
 import { RedisModule } from '@/client/redis/redis.module';
+import { JwtModule } from '@/client/jwt/jwt.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RedisModule } from '@/client/redis/redis.module';
     }),
     RedisModule,
     PrismaModule,
+    JwtModule,
     UserModule,
     BookModule,
     SentenceModule,

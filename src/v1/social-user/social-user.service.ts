@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { ISocialUserService } from '@/v1/social-user/port/social-user.service.interface';
-import { ISocialUserRepository } from '@/v1/social-user/port/social-user.repository.interface';
+import type { ISocialUserService } from '@/v1/social-user/port/in/social-user.service.interface';
+import { ISocialUserRepository } from '@/v1/social-user/port/out/social-user.repository.interface';
 import { CreateSocialUserDto } from '@/v1/social-user/dto/create-social-user.dto';
 
 @Injectable()

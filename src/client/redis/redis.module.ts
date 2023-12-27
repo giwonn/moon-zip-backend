@@ -1,12 +1,10 @@
 import { Module, Global } from '@nestjs/common';
 import { RedisModule as NestjsRedisModule } from '@songkeys/nestjs-redis';
-import { RedisService } from '@/client/redis/redis.service';
-import { JwtModule } from '@nestjs/jwt';
+import { RedisClient } from '@/client/redis/redis.client';
 
 @Global()
 @Module({
   imports: [
-    JwtModule.register({}),
     NestjsRedisModule.forRoot({
       config: {
         host: process.env.REDIS_HOST,
@@ -15,7 +13,7 @@ import { JwtModule } from '@nestjs/jwt';
       },
     }),
   ],
-  exports: [RedisService],
-  providers: [RedisService],
+  exports: [RedisClient],
+  providers: [RedisClient],
 })
 export class RedisModule {}

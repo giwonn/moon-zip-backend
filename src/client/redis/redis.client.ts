@@ -1,21 +1,21 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RedisService as NestjsRedisService } from '@songkeys/nestjs-redis';
-import { JwtService } from '@nestjs/jwt';
+import { RedisService } from '@songkeys/nestjs-redis';
 import { REFRESH_TOKEN_EXPIRATION_TIME } from '@/v1/auth/constant/token.constant';
+import { JwtClient } from '@/client/jwt/jwt.client';
 
 @Injectable()
-export class RedisService {
-  private readonly redisClient: ReturnType<NestjsRedisService['getClient']>;
+export class RedisClient {
+  private readonly redisClient: ReturnType<RedisService['getClient']>;
 
   constructor(
-    private readonly redisService: NestjsRedisService,
-    private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
+    private readonly jwtClient: JwtClient,
   ) {
     this.redisClient = this.redisService.getClient();
   }
 
   async getUserId(refreshToken: string) {
-    const { tokenId } = this.jwtService.decode(refreshToken);
+    const { tokenId } = this.jwtClient.decode(refreshToken);
     const userId = await this.redisClient.get(tokenId);
 
     if (!userId) {
@@ -26,7 +26,7 @@ export class RedisService {
   }
 
   async addToken(userId: string, refreshToken: string) {
-    const { tokenId } = this.jwtService.decode(refreshToken);
+    const { tokenId } = this.jwtClient.decode(refreshToken);
     await this.redisClient.setex(
       tokenId,
       REFRESH_TOKEN_EXPIRATION_TIME,
@@ -36,10 +36,7 @@ export class RedisService {
     console.log('add token:', tokenId);
   }
 
-  async deleteToken(refreshToken: string) {
-    const { tokenId } = this.jwtService.decode(refreshToken);
-    if (!tokenId) return;
-
+  async deleteByTokenId(tokenId: string) {
     await this.redisClient.del(tokenId);
     console.log('delete token:', tokenId);
   }

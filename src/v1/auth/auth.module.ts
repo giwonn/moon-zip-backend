@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { JwtModule } from '@nestjs/jwt';
 import { toProvider } from '@/libs/util';
 import { UserModule } from '@/v1/user/user.module';
 import { UserRepository } from '@/v1/user/user.repository';
@@ -11,7 +10,7 @@ import { SocialUserRepository } from '@/v1/social-user/social-user.repository';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
 
 @Module({
-  imports: [JwtModule.register({}), UserModule, SocialUserModule],
+  imports: [UserModule, SocialUserModule],
   controllers: [AuthController],
   providers: toProvider(
     AuthService,
