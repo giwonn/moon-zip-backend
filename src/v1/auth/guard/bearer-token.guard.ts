@@ -16,8 +16,8 @@ abstract class BearerTokenGuard implements CanActivate {
 
     if (payload.userId) {
       request.userId = payload.userId;
-    } else {
-      request.refreshToken = token;
+    } else if (payload.tokenId) {
+      request.tokenId = payload.tokenId;
     }
 
     return true;

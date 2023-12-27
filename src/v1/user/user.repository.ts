@@ -47,8 +47,4 @@ export class UserRepository implements IUserRepository {
       data: updateUserDto,
     });
   }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

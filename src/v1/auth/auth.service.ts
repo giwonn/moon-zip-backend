@@ -37,6 +37,10 @@ export class AuthService implements IAuthService {
     return await this.updateToken(user.id);
   }
 
+  async logout(tokenId: string) {
+    await this.redisClient.deleteByTokenId(tokenId);
+  }
+
   async register(createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
     await this.addSocialUser(user.id, createUserDto);
@@ -44,11 +48,10 @@ export class AuthService implements IAuthService {
     return await this.updateToken(user.id);
   }
 
-  async rotateToken(refreshToken: string) {
-    const { tokenId } = this.jwtClient.decode(refreshToken);
+  async rotateToken(tokenId: string) {
+    const userId = await this.redisClient.getUserId(tokenId);
     await this.redisClient.deleteByTokenId(tokenId);
 
-    const userId = await this.redisClient.getUserId(refreshToken);
     return await this.updateToken(userId);
   }
 
@@ -64,12 +67,14 @@ export class AuthService implements IAuthService {
   async updateToken(userId: string) {
     const payload = { userId };
     const accessToken = this.jwtClient.sign({ payload });
+
+    const tokenId = v4();
     const refreshToken = this.jwtClient.sign({
-      payload: { tokenId: v4() },
+      payload: { tokenId },
       expiresIn: REFRESH_TOKEN_EXPIRATION_TIME,
     });
 
-    await this.redisClient.addToken(userId, refreshToken);
+    await this.redisClient.addToken(userId, tokenId);
 
     return { accessToken, refreshToken };
   }

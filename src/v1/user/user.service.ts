@@ -27,8 +27,4 @@ export class UserService implements IUserService {
   async update(userId: string, updateUserDto: UpdateUserDto) {
     return await this.userRepository.update(userId, updateUserDto);
   }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

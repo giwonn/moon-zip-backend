@@ -91,7 +91,7 @@ describe('AuthService', () => {
 
     mockUserService.create.mockResolvedValue(user);
     mockSocialUserService.create.mockResolvedValue(socialUser);
-    // mockJwtClient.sign.mockReturnValue('test');
+    mockJwtClient.sign.mockReturnValue('test');
   });
 
   describe('소셜 로그인', () => {

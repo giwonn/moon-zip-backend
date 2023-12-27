@@ -8,14 +8,13 @@ export class RedisClient {
   private readonly redisClient: ReturnType<RedisService['getClient']>;
 
   constructor(
-    private readonly redisService: RedisService,
     private readonly jwtClient: JwtClient,
+    private readonly redisService: RedisService,
   ) {
     this.redisClient = this.redisService.getClient();
   }
 
-  async getUserId(refreshToken: string) {
-    const { tokenId } = this.jwtClient.decode(refreshToken);
+  async getUserId(tokenId: string) {
     const userId = await this.redisClient.get(tokenId);
 
     if (!userId) {
@@ -25,8 +24,7 @@ export class RedisClient {
     return userId;
   }
 
-  async addToken(userId: string, refreshToken: string) {
-    const { tokenId } = this.jwtClient.decode(refreshToken);
+  async addToken(tokenId: string, userId: string) {
     await this.redisClient.setex(
       tokenId,
       REFRESH_TOKEN_EXPIRATION_TIME,
