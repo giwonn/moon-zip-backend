@@ -5,19 +5,19 @@ import { SOCIAL_TYPE } from './constant/auth.enum';
 import { User } from '@/v1/user/entities/user.entity';
 import { SocialUser } from '@/v1/social-user/entities/social-user.entity';
 import { toProvider } from '@/libs/util';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { mockUserService } from '@/v1/user/user.service.mock';
 import { mockSocialUserService } from '@/v1/social-user/social-user.service.mock';
 import type { IAuthService } from './port/in/auth.service.interface';
-import { RedisService } from '@/client/redis/redis.service';
+import { RedisClient } from '@/client/redis/redis.client';
 import { UnauthorizedException } from '@nestjs/common';
-import { createMockService } from '@/libs/mock';
+import { JwtClient } from '@/client/jwt/jwt.client';
+import { mockJwtClient } from '@/client/jwt/jwt.client.mock';
+import { mockRedisClient } from '@/client/redis/redis.client.mock';
 
 describe('AuthService', () => {
   let authService: IAuthService;
-  let jwtService: JwtService;
-  const mockRedisService = createMockService(RedisService);
+  let jwtClient: JwtClient;
   let createUserDto: CreateUserDto;
   let user: User;
   let socialUser: SocialUser;
@@ -73,24 +73,25 @@ describe('AuthService', () => {
           },
         },
         {
-          provide: RedisService,
-          useValue: mockRedisService,
+          provide: RedisClient,
+          useValue: mockRedisClient,
         },
-        JwtService,
+        {
+          provide: JwtClient,
+          useValue: mockJwtClient,
+        },
       ],
     }).compile();
 
     authService = module.get<IAuthService>('AuthService');
-    jwtService = module.get<JwtService>(JwtService);
+    jwtClient = module.get<JwtClient>(JwtClient);
 
     initCreateUserDto();
     initUserWithSocial(createUserDto);
 
     mockUserService.create.mockResolvedValue(user);
     mockSocialUserService.create.mockResolvedValue(socialUser);
-    jest
-      .spyOn(authService, 'signLoginToken')
-      .mockReturnValue(accessAndRefreshToken);
+    // mockJwtClient.sign.mockReturnValue('test');
   });
 
   describe('소셜 로그인', () => {
@@ -143,7 +144,7 @@ describe('AuthService', () => {
   describe('rotateToken', () => {
     it('redis에 리프레쉬 토큰이 없는 경우', () => {
       jest
-        .spyOn(jwtService, 'verify')
+        .spyOn(jwtClient, 'verify')
         .mockReturnValue(new UnauthorizedException());
     });
   });
