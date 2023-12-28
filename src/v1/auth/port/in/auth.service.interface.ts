@@ -10,7 +10,7 @@ export interface IAuthService {
     user: User,
     createUserDto: CreateUserDto,
   ): Promise<AccessAndRefreshToken>;
-  logout(tokenId: string): Promise<void>;
+  logout(userId: string): Promise<void>;
   register(createUserDto: CreateUserDto): Promise<AccessAndRefreshToken>;
-  rotateToken(tokenId: string): Promise<AccessAndRefreshToken>;
+  rotateToken(userId: string): Promise<AccessAndRefreshToken>;
 }

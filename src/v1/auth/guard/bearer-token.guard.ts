@@ -12,13 +12,14 @@ abstract class BearerTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     const token = this.extractToken(request.headers.authorization);
-    const payload = await this.verify(token);
+    request.token = token;
 
-    if (payload.userId) {
-      request.userId = payload.userId;
-    } else if (payload.tokenId) {
-      request.tokenId = payload.tokenId;
+    const { userId, type } = await this.verify(token);
+    if (!userId || !type) {
+      throw new UnauthorizedException('payload가 잘못되었습니다.');
     }
+    request.userId = userId;
+    request.type = type;
 
     return true;
   }
@@ -59,7 +60,7 @@ export class AccessTokenGuard extends BearerTokenGuard {
     await super.canActivate(context);
 
     const request = context.switchToHttp().getRequest();
-    if (!request.userId || request.tokenId) {
+    if (request.type !== 'access') {
       throw new UnauthorizedException('access 토큰이 아닙니다.');
     }
 
@@ -71,7 +72,7 @@ export class AccessTokenGuard extends BearerTokenGuard {
 export class RefreshTokenGuard extends BearerTokenGuard {
   constructor(
     readonly jwtClient: JwtClient,
-    private readonly redisService: RedisClient,
+    private readonly redisClient: RedisClient,
   ) {
     super(jwtClient);
   }
@@ -81,26 +82,24 @@ export class RefreshTokenGuard extends BearerTokenGuard {
       await super.canActivate(context);
     } catch (error) {
       const request = context.switchToHttp().getRequest();
-      const tokenId = await this.extractTokenId(request.headers.authorization);
-      if (tokenId) {
-        await this.redisService.deleteByTokenId(tokenId);
-      }
+      await this.redisClient.delete(request.userId);
 
       throw error;
     }
 
     const request = context.switchToHttp().getRequest();
-    if (request.userId || !request.tokenId) {
+    if (request.type !== 'refresh') {
       throw new UnauthorizedException('refresh 토큰이 아닙니다.');
     }
 
+    const storedToken = await this.redisClient.getRefreshToken(request.userId);
+    if (storedToken !== request.token) {
+      await this.redisClient.delete(request.userId);
+      throw new UnauthorizedException(
+        '현재 refresh 토큰이 아닙니다. 요청 유저 로그아웃되었습니다.',
+      );
+    }
+
     return true;
-  }
-
-  private async extractTokenId(authorization?: string) {
-    const token = this.extractToken(authorization);
-    const payload = await this.jwtClient.decode(token);
-
-    return payload?.tokenId;
   }
 }

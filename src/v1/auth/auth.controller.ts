@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { SocialAuthGuard } from '@/v1/auth/guard/social-auth.guard';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
-import { TokenId } from '@/v1/auth/decorator/token-id.decorator';
+import { UserId } from '@/v1/auth/decorator/user-id.decorator';
 import { RefreshTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
 import type { IAuthService } from './port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
@@ -38,13 +38,13 @@ export class AuthController {
   @Post('logout')
   @UseGuards(RefreshTokenGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async logout(@TokenId() tokenId: string) {
-    await this.authService.logout(tokenId);
+  async logout(@UserId() userId: string) {
+    await this.authService.logout(userId);
   }
 
   @Post('token/rotate')
   @UseGuards(RefreshTokenGuard)
-  async rotateToken(@TokenId() tokenId: string) {
-    return await this.authService.rotateToken(tokenId);
+  async rotateToken(@UserId() userId: string) {
+    return await this.authService.rotateToken(userId);
   }
 }

@@ -1,10 +1,8 @@
-import { v4 } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
 import { RedisClient } from '@/client/redis/redis.client';
 import { User } from '@/v1/user/entities/user.entity';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 import { CreateSocialUserDto } from '@/v1/social-user/dto/create-social-user.dto';
-import { REFRESH_TOKEN_EXPIRATION_TIME } from '@/v1/auth/constant/token.constant';
 import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
 import type { ISocialUserService } from '@/v1/social-user/port/in/social-user.service.interface';
@@ -37,8 +35,8 @@ export class AuthService implements IAuthService {
     return await this.updateToken(user.id);
   }
 
-  async logout(tokenId: string) {
-    await this.redisClient.deleteByTokenId(tokenId);
+  async logout(userId: string) {
+    await this.redisClient.delete(userId);
   }
 
   async register(createUserDto: CreateUserDto) {
@@ -48,10 +46,7 @@ export class AuthService implements IAuthService {
     return await this.updateToken(user.id);
   }
 
-  async rotateToken(tokenId: string) {
-    const userId = await this.redisClient.getUserId(tokenId);
-    await this.redisClient.deleteByTokenId(tokenId);
-
+  async rotateToken(userId: string) {
     return await this.updateToken(userId);
   }
 
@@ -65,16 +60,10 @@ export class AuthService implements IAuthService {
   }
 
   async updateToken(userId: string) {
-    const payload = { userId };
-    const accessToken = this.jwtClient.sign({ payload });
+    const accessToken = this.jwtClient.signAccessToken(userId);
+    const refreshToken = this.jwtClient.signRefreshToken(userId);
 
-    const tokenId = v4();
-    const refreshToken = this.jwtClient.sign({
-      payload: { tokenId },
-      expiresIn: REFRESH_TOKEN_EXPIRATION_TIME,
-    });
-
-    await this.redisClient.addToken(userId, tokenId);
+    await this.redisClient.addToken(userId, refreshToken);
 
     return { accessToken, refreshToken };
   }
