@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '@/client/prisma/prisma.module';
 import { UserModule } from '@/v1/user/user.module';
@@ -29,11 +29,22 @@ import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
     AuthModule,
     SocialUserModule,
   ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AccessTokenGuard,
-    },
-  ],
 })
-export class AppModule {}
+export class AppModule {
+  static register(): DynamicModule {
+    const providers: any[] = [];
+
+    if (process.env.NODE_ENV !== 'development') {
+      providers.push({
+        provide: APP_GUARD,
+        useClass: AccessTokenGuard,
+      });
+    }
+
+    return {
+      module: AppModule,
+      providers: providers,
+      exports: providers,
+    };
+  }
+}
