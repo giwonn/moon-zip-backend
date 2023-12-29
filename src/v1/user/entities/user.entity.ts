@@ -8,8 +8,8 @@ export class User implements PrismaUser {
   email: string;
   @ApiProperty()
   macId: string;
-  @ApiProperty()
-  nickname: string;
+  @ApiProperty({ required: false })
+  nickname: string | null;
   @ApiProperty({ required: false })
   imageUrl: string | null;
   createdAt: Date;
