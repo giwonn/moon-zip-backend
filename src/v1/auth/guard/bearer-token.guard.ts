@@ -1,8 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import type { CanActivate, ExecutionContext } from '@nestjs/common';
-import { RedisClient } from '@/client/redis/redis.client';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { TokenExpiredError } from '@nestjs/jwt';
+import { RedisClient } from '@/client/redis/redis.client';
 import { JwtClient } from '@/client/jwt/jwt.client';
+import type { CanActivate, ExecutionContext } from '@nestjs/common';
 
 @Injectable()
 abstract class BearerTokenGuard implements CanActivate {
@@ -45,11 +49,11 @@ abstract class BearerTokenGuard implements CanActivate {
     try {
       return this.jwtClient.verify<T>(token);
     } catch (error) {
-      if (error instanceof TokenExpiredError) {
-        throw new TokenExpiredError('만료된 토큰입니다.', error.expiredAt);
+      if (!(error instanceof TokenExpiredError)) {
+        throw new BadRequestException('잘못된 토큰입니다.');
       }
 
-      throw new UnauthorizedException('잘못된 토큰입니다.');
+      throw error;
     }
   }
 }
@@ -57,7 +61,13 @@ abstract class BearerTokenGuard implements CanActivate {
 @Injectable()
 export class AccessTokenGuard extends BearerTokenGuard {
   async canActivate(context: ExecutionContext) {
-    await super.canActivate(context);
+    try {
+      await super.canActivate(context);
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('만료된 access 토큰입니다.');
+      }
+    }
 
     const request = context.switchToHttp().getRequest();
     if (request.type !== 'access') {
@@ -81,10 +91,9 @@ export class RefreshTokenGuard extends BearerTokenGuard {
     try {
       await super.canActivate(context);
     } catch (error) {
-      const request = context.switchToHttp().getRequest();
-      await this.redisClient.delete(request.userId);
-
-      throw error;
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('만료된 refresh 토큰입니다.');
+      }
     }
 
     const request = context.switchToHttp().getRequest();
@@ -94,10 +103,7 @@ export class RefreshTokenGuard extends BearerTokenGuard {
 
     const storedToken = await this.redisClient.getRefreshToken(request.userId);
     if (storedToken !== request.token) {
-      await this.redisClient.delete(request.userId);
-      throw new UnauthorizedException(
-        '현재 refresh 토큰이 아닙니다. 요청 유저 로그아웃되었습니다.',
-      );
+      throw new UnauthorizedException('현재 사용중인 refresh 토큰이 아닙니다.');
     }
 
     return true;

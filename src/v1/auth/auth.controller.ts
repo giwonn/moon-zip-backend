@@ -12,7 +12,7 @@ import { SocialAuthGuard } from '@/v1/auth/guard/social-auth.guard';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 import { UserId } from '@/v1/auth/decorator/user-id.decorator';
 import { RefreshTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
-import type { IAuthService } from './port/in/auth.service.interface';
+import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
 import type { Response } from 'express';
 
@@ -32,7 +32,8 @@ export class AuthController {
       return response.status(HttpStatus.CREATED).send(token);
     }
 
-    return await this.authService.login(user, createUserDto);
+    const token = await this.authService.login(user, createUserDto);
+    return response.status(HttpStatus.OK).send(token);
   }
 
   @Post('logout')

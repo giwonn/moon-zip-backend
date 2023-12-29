@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { RedisService } from '@songkeys/nestjs-redis';
 import { REFRESH_TOKEN_EXPIRATION_TIME } from '@/v1/auth/constant/token.constant';
 
@@ -11,12 +11,7 @@ export class RedisClient {
   }
 
   async getRefreshToken(userId: string) {
-    const getRefreshToken = await this.redisClient.get(userId);
-    if (getRefreshToken === null) {
-      throw new UnauthorizedException('존재하지 않는 로그인 증명입니다.');
-    }
-
-    return getRefreshToken;
+    return await this.redisClient.get(userId);
   }
 
   async addToken(userId: string, refreshToken: string) {
@@ -26,11 +21,15 @@ export class RedisClient {
       refreshToken,
     );
 
-    console.log(`ADD TOKEN - userId: ${userId}, refreshToken: ${refreshToken}`);
+    console.log('add token -', { userId });
   }
 
   async delete(userId: string) {
-    await this.redisClient.del(userId);
-    console.log('delete token:', userId);
+    const deletedCount = await this.redisClient.del(userId);
+    if (deletedCount === 0) {
+      console.log('token not found -', { userId });
+    } else {
+      console.log('deleted token -', { userId });
+    }
   }
 }
