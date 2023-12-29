@@ -4,15 +4,15 @@ import { ApiProperty } from '@nestjs/swagger';
 export class Book implements PrismaBook {
   @ApiProperty()
   id: string;
-  title: string;
-  contents: string;
-  url: string;
+  title: string | null;
+  contents: string | null;
+  url: string | null;
   authors: string[];
   translators: string[];
-  publisher: string;
-  price: number;
-  salePrice: number;
-  thumbnailUrl: string;
-  status: string;
-  publishDate: Date;
+  publisher: string | null;
+  price: number | null;
+  salePrice: number | null;
+  thumbnailUrl: string | null;
+  status: string | null;
+  publishDate: Date | null;
 }
