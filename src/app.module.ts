@@ -10,6 +10,8 @@ import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
 import { RedisModule } from '@/client/redis/redis.module';
 import { JwtModule } from '@/client/jwt/jwt.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
 
 @Module({
   imports: [
@@ -26,6 +28,12 @@ import { JwtModule } from '@/client/jwt/jwt.module';
     LibraryModule,
     AuthModule,
     SocialUserModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
   ],
 })
 export class AppModule {}

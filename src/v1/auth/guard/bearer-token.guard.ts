@@ -61,6 +61,12 @@ abstract class BearerTokenGuard implements CanActivate {
 @Injectable()
 export class AccessTokenGuard extends BearerTokenGuard {
   async canActivate(context: ExecutionContext) {
+    // 액세스 토큰이 필요 없는 요청
+    const request = context.switchToHttp().getRequest();
+    const path = request.route.path;
+    if (path.startsWith('/auth/')) return true;
+
+    // BearearTokenGuard 검증
     try {
       await super.canActivate(context);
     } catch (error) {
@@ -69,7 +75,7 @@ export class AccessTokenGuard extends BearerTokenGuard {
       }
     }
 
-    const request = context.switchToHttp().getRequest();
+    // AccessTokenGuard 검증
     if (request.type !== 'access') {
       throw new UnauthorizedException('access 토큰이 아닙니다.');
     }
@@ -88,6 +94,7 @@ export class RefreshTokenGuard extends BearerTokenGuard {
   }
 
   async canActivate(context: ExecutionContext) {
+    // BearearTokenGuard 검증
     try {
       await super.canActivate(context);
     } catch (error) {
@@ -96,6 +103,7 @@ export class RefreshTokenGuard extends BearerTokenGuard {
       }
     }
 
+    // RefreshTokenGuard 검증
     const request = context.switchToHttp().getRequest();
     if (request.type !== 'refresh') {
       throw new UnauthorizedException('refresh 토큰이 아닙니다.');
