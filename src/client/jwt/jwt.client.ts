@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import {
+  ACCESS_TOKEN_EXPIRATION_TIME,
+  REFRESH_TOKEN_EXPIRATION_TIME,
+} from '@/v1/auth/constant/token.constant';
 
 @Injectable()
 export class JwtClient {
@@ -9,7 +13,7 @@ export class JwtClient {
     private readonly configService: ConfigService,
   ) {}
 
-  sign({
+  private sign({
     payload,
     expiresIn,
   }: {
@@ -18,7 +22,7 @@ export class JwtClient {
   } = {}) {
     return this.jwtService.sign(payload ?? {}, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: expiresIn ?? '7h',
+      expiresIn,
     });
   }
 
@@ -28,25 +32,20 @@ export class JwtClient {
     });
   }
 
-  decode(token: string) {
-    return this.jwtService.decode(token);
-  }
-
   signAccessToken(userId: string) {
     return this.sign({
       payload: {
         type: 'access',
         userId,
       },
-      expiresIn: '2s',
+      expiresIn: ACCESS_TOKEN_EXPIRATION_TIME,
     });
   }
 
   signRefreshToken(userId: string) {
     return this.sign({
       payload: { type: 'refresh', userId },
-      // expiresIn: REFRESH_TOKEN_EXPIRATION_TIME,
-      expiresIn: '4s',
+      expiresIn: REFRESH_TOKEN_EXPIRATION_TIME,
     });
   }
 }
