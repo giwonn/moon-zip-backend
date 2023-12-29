@@ -8,7 +8,7 @@ export const UserId = createParamDecorator((_, ctx) => {
 
   if (!request.userId) {
     throw new InternalServerErrorException(
-      'UserId 데코레이터를 사용하려면 TokenGuard가 선행되어야 합니다.',
+      'UserId 데코레이터를 사용하려면 AccessTokenGuard 또는 RefreshTokenGuard가 선행되어야 합니다.',
     );
   }
 

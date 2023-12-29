@@ -66,7 +66,7 @@ export class AccessTokenGuard extends BearerTokenGuard {
     const path = request.route.path;
     if (path.startsWith('/auth/')) return true;
 
-    // BearearTokenGuard 검증
+    // BearerTokenGuard 검증
     try {
       await super.canActivate(context);
     } catch (error) {
@@ -94,7 +94,7 @@ export class RefreshTokenGuard extends BearerTokenGuard {
   }
 
   async canActivate(context: ExecutionContext) {
-    // BearearTokenGuard 검증
+    // BearerTokenGuard 검증
     try {
       await super.canActivate(context);
     } catch (error) {
