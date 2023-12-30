@@ -15,6 +15,7 @@ import { RefreshTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
 import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
 import type { Response } from 'express';
+import { SocialUser } from '@/v1/auth/decorator/social-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +26,10 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(SocialAuthGuard) // 로그인 요청 받으면 유효한 소셜로그인 정보인지 검증
-  async login(@Body() createUserDto: CreateUserDto, @Res() response: Response) {
+  async login(
+    @SocialUser() createUserDto: CreateUserDto,
+    @Res() response: Response,
+  ) {
     const user = await this.userService.findOneByEmail(createUserDto.email);
     if (!user) {
       const token = await this.authService.register(createUserDto);
