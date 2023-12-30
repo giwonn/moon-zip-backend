@@ -34,9 +34,10 @@ jobs:
             cd /usr/src
             if [ -d 'moon-zip-backend' ]; then
               cd moon-zip-backend
-              sudo docker compose -f docker-compose.stage.yml down --rmi local
+              sudo docker compose -f docker-compose.stage.yml stop server
               if sudo docker volume ls -q | grep -q 'moon-zip-backend_server'; then
-                sudo docker volume rm moon-zip-backend_server
+                sudo docker compose -f docker-compose.stage.yml rm -f -v server
+              fi
               cd ../
               sudo rm -rf moon-zip-backend
             fi

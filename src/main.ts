@@ -14,7 +14,7 @@ async function bootstrap() {
     };
   }
 
-  const app = await NestFactory.create(AppModule.register(), {
+  const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn'],
     httpsOptions,
   });

@@ -12,9 +12,6 @@ services:
     restart: always
     ports:
       - '8010:3000'
-    volumes:
-      - .:/usr/src/app
-      - server:/usr/src/app/node_modules
     depends_on:
       - db
       - redis
@@ -38,6 +35,5 @@ services:
     volumes:
       - redis:/data
 volumes:
-  server:
   db:
   redis:

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaRepository } from '../../client/prisma/prisma.repository';
+import { PrismaRepository } from '@/client/prisma/prisma.repository';
 import { Tag } from './entities/tag.entity';
 import { ITagRepository } from './port/out/tag.repository.interface';
 
@@ -37,7 +37,7 @@ export class TagRepository implements ITagRepository {
       tagData.sentence_id_list.push(tag.sentence.seq); // Assuming 'seq' is the sentence ID
 
       return acc;
-    }, []);
+    }, [] as any[]);
 
     return transformedData;
   }

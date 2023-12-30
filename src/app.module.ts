@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '@/client/prisma/prisma.module';
 import { UserModule } from '@/v1/user/user.module';
@@ -10,8 +10,9 @@ import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
 import { RedisModule } from '@/client/redis/redis.module';
 import { JwtModule } from '@/client/jwt/jwt.module';
-import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
+
+const globalGuards = [AccessTokenGuard];
 
 @Module({
   imports: [
@@ -29,22 +30,6 @@ import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
     AuthModule,
     SocialUserModule,
   ],
+  providers: [...(process.env.NODE_ENV !== 'development' ? globalGuards : [])],
 })
-export class AppModule {
-  static register(): DynamicModule {
-    const providers: any[] = [];
-
-    if (process.env.NODE_ENV !== 'development') {
-      providers.push({
-        provide: APP_GUARD,
-        useClass: AccessTokenGuard,
-      });
-    }
-
-    return {
-      module: AppModule,
-      providers: providers,
-      exports: providers,
-    };
-  }
-}
+export class AppModule {}
