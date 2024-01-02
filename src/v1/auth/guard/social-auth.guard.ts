@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   UnauthorizedException,
@@ -55,6 +56,10 @@ export class SocialAuthGuard implements CanActivate {
       [SOCIAL_TYPE.NAVER]: this.naverAuthenticate,
     };
 
+    if (!strategy[type]) {
+      throw new BadRequestException('잘못된 소셜 로그인 타입입니다.');
+    }
+
     return await strategy[type](token);
   }
 
@@ -91,10 +96,19 @@ export class SocialAuthGuard implements CanActivate {
     };
   }
 
-  async naverAuthenticate(socialId: string) {
-    return {
-      id: 're',
-      email: 're',
-    };
+  async naverAuthenticate(token: string) {
+    try {
+      const { response } = await fetch('https://openapi.naver.com/v1/nid/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res) => res.json());
+
+      return response;
+    } catch (e) {
+      throw new BadRequestException(
+        '인증되지 않은 naver 소셜 로그인 정보입니다.',
+      );
+    }
   }
 }
