@@ -99,4 +99,12 @@ export class BookController {
     let validUserId = token; // Validate Logic
     return await this.bookService.findAll(validUserId);
   }
+
+  @Get('count')
+  @ApiOperation({ summary: '도서 수 조회' })
+  @ApiOkResponse({ type: Number })
+  async count(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.bookService.count(validUserId);
+  }
 }

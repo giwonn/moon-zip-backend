@@ -90,4 +90,14 @@ export class BookRepository implements IBookRepository {
 
     return books;
   }
+
+  async count(userId: string): Promise<any> {
+    const count = await this.prisma.library.count({
+      where: {
+        userId,
+      },
+    });
+
+    return count;
+  }
 }

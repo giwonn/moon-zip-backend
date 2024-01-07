@@ -68,4 +68,8 @@ export class BookService {
     const myBookId = await this.bookRepository.findOne(userId, bookId);
     return await this.bookRepository.findBook(myBookId);
   }
+
+  async count(userId: string) {
+    return await this.bookRepository.count(userId);
+  }
 }
