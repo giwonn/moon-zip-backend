@@ -62,4 +62,12 @@ export class TagController {
     let validUserId = token; // Validate Logic
     return await this.tagService.count(validUserId);
   }
+
+  @Get('recent')
+  @ApiOperation({ summary: '최근 태그 조회' })
+  @ApiOkResponse({ type: [Tag] })
+  async findRecent(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.tagService.findRecent(validUserId);
+  }
 }
