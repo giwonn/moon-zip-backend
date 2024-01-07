@@ -59,4 +59,13 @@ export class BookService {
   async search(target: string, query: string) {
     return await this.bookSearchClient.searchBooks(target, query);
   }
+
+  async findAll(userId: string) {
+    return await this.bookRepository.findAll(userId);
+  }
+
+  async findOne(userId: string, bookId: string) {
+    const myBookId = await this.bookRepository.findOne(userId, bookId);
+    return await this.bookRepository.findBook(myBookId);
+  }
 }
