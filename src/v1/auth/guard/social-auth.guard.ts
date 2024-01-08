@@ -54,6 +54,7 @@ export class SocialAuthGuard implements CanActivate {
     > = {
       [SOCIAL_TYPE.KAKAO]: this.kakaoAuthenticate,
       [SOCIAL_TYPE.NAVER]: this.naverAuthenticate,
+      [SOCIAL_TYPE.GOOGLE]: this.googleAuthenticate,
     };
 
     if (!strategy[type]) {
@@ -110,5 +111,18 @@ export class SocialAuthGuard implements CanActivate {
         '인증되지 않은 naver 소셜 로그인 정보입니다.',
       );
     }
+  }
+
+  async googleAuthenticate(token: string) {
+    const response = await fetch(
+      `https://www.googleapis.com/oauth2/v2/userinfo`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    ).then((res) => res.json());
+
+    return { id: response.id, email: response.email };
   }
 }
