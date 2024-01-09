@@ -12,8 +12,6 @@ import { RedisModule } from '@/client/redis/redis.module';
 import { JwtModule } from '@/client/jwt/jwt.module';
 import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
 
-const globalGuards = [AccessTokenGuard];
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +28,6 @@ const globalGuards = [AccessTokenGuard];
     AuthModule,
     SocialUserModule,
   ],
-  providers: [...(process.env.NODE_ENV !== 'development' ? globalGuards : [])],
+  providers: [AccessTokenGuard],
 })
 export class AppModule {}
