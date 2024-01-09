@@ -13,11 +13,13 @@ import { validate } from 'class-validator';
 @Injectable()
 export class SocialAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest();
+
     if (process.env.NODE_ENV === 'development') {
+      request.createUserDto = this.processToDevEnvironment(request.body);
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
     const { type, token, macId } = await this.getLoginInfo(request.body);
 
     const { id, email } = await this.authenticate(type, token);
@@ -39,6 +41,17 @@ export class SocialAuthGuard implements CanActivate {
     request.createUserDto = createUserDto;
 
     return true;
+  }
+
+  async processToDevEnvironment(body: any) {
+    const createUserDto = plainToInstance(CreateUserDto, body);
+    const errors = await validate(createUserDto);
+    if (errors.length > 0) {
+      throw new UnauthorizedException(
+        errors.flatMap((error) => Object.values(error.constraints ?? {})),
+      );
+    }
+    return createUserDto;
   }
 
   private async getLoginInfo(body: any) {
