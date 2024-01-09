@@ -11,12 +11,14 @@ import { SocialUserModule } from '@/v1/social-user/social-user.module';
 import { RedisModule } from '@/client/redis/redis.module';
 import { JwtModule } from '@/client/jwt/jwt.module';
 import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
+import { LoggerModule } from '@/client/logger/logger.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    LoggerModule,
     RedisModule,
     PrismaModule,
     JwtModule,
