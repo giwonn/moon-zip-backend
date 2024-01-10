@@ -10,7 +10,7 @@ import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
 import { RedisModule } from '@/client/redis/redis.module';
 import { JwtModule } from '@/client/jwt/jwt.module';
-import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
+import { AccessTokenGuard } from '@/common/guard/global/access-token.guard';
 import { LoggerModule } from '@/client/logger/logger.module';
 
 @Module({

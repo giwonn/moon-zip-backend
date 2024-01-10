@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -8,14 +7,14 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { SocialAuthGuard } from '@/v1/auth/guard/social-auth.guard';
+import { SocialAuthGuard } from '@/common/guard/social-auth.guard';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
-import { UserId } from '@/v1/auth/decorator/user-id.decorator';
-import { RefreshTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
+import { UserId } from '@/common/decorator/user-id.decorator';
+import { RefreshTokenGuard } from '@/common/guard/refresh-token.guard';
 import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
 import type { Response } from 'express';
-import { SocialUser } from '@/v1/auth/decorator/social-user.decorator';
+import { SocialUser } from '@/common/decorator/social-user.decorator';
 
 @Controller('auth')
 export class AuthController {
