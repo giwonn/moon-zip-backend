@@ -4,11 +4,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { SOCIAL_TYPE } from '@/v1/auth/constant/auth.enum';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 import { validate } from 'class-validator';
+import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
+import { SOCIAL_TYPE } from '@/v1/auth/constant/auth.enum';
 
 @Injectable()
 export class SocialAuthGuard implements CanActivate {

@@ -1,21 +1,19 @@
 import {
-  Body,
   Controller,
   HttpCode,
+  HttpException,
   HttpStatus,
   Inject,
   Post,
-  Res,
   UseGuards,
 } from '@nestjs/common';
-import { SocialAuthGuard } from '@/v1/auth/guard/social-auth.guard';
+import { SocialAuthGuard } from '@/common/guard/social-auth.guard';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
-import { UserId } from '@/v1/auth/decorator/user-id.decorator';
-import { RefreshTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
+import { UserId } from '@/common/decorator/user-id.decorator';
+import { RefreshTokenGuard } from '@/common/guard/refresh-token.guard';
 import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
 import type { IUserService } from '@/v1/user/port/in/user.service.interface';
-import type { Response } from 'express';
-import { SocialUser } from '@/v1/auth/decorator/social-user.decorator';
+import { SocialUser } from '@/common/decorator/social-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -26,18 +24,13 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(SocialAuthGuard) // 로그인 요청 받으면 유효한 소셜로그인 정보인지 검증
-  async login(
-    @SocialUser() createUserDto: CreateUserDto,
-    @Res() response: Response,
-  ) {
+  async login(@SocialUser() createUserDto: CreateUserDto) {
     const user = await this.userService.findOneByEmail(createUserDto.email);
     if (!user) {
-      const token = await this.authService.register(createUserDto);
-      return response.status(HttpStatus.CREATED).send(token);
+      return await this.authService.register(createUserDto);
     }
 
-    const token = await this.authService.login(user, createUserDto);
-    return response.status(HttpStatus.OK).send(token);
+    return await this.authService.login(user, createUserDto);
   }
 
   @Post('logout')

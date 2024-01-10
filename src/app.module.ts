@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '@/client/prisma/prisma.module';
 import { UserModule } from '@/v1/user/user.module';
@@ -10,13 +10,20 @@ import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
 import { RedisModule } from '@/client/redis/redis.module';
 import { JwtModule } from '@/client/jwt/jwt.module';
-import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
+import { AccessTokenGuard } from '@/common/guard/global/access-token.guard';
+import { LoggerModule } from '@/client/logger/logger.module';
+import { HttpLoggerMiddleware } from '@/common/middleware/morgan.middleware';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { SuccessResponseInterceptor } from '@/common/interceptor/success-response.interceptor';
+import { ErrorExceptionFilter } from '@/common/filter/error-exception.filter';
+import { FailExceptionFilter } from '@/common/filter/fail-exception.filter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    LoggerModule,
     RedisModule,
     PrismaModule,
     JwtModule,
@@ -28,6 +35,27 @@ import { AccessTokenGuard } from '@/v1/auth/guard/bearer-token.guard';
     AuthModule,
     SocialUserModule,
   ],
-  providers: [AccessTokenGuard],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SuccessResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ErrorExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: FailExceptionFilter,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HttpLoggerMiddleware).forRoutes('*');
+  }
+}
