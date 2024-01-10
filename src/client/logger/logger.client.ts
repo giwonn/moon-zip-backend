@@ -12,6 +12,10 @@ export class LoggerClient {
     this.logger.debug(message, { context });
   }
 
+  http(message: string) {
+    this.logger.http(message);
+  }
+
   log(message: string, context?: string) {
     this.logger.info(message, { context });
   }

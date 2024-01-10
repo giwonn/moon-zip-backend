@@ -2,11 +2,13 @@ import { Global, Module } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { LoggerClient } from '@/client/logger/logger.client';
+import * as process from 'process';
+import * as WinstonDaily from 'winston-daily-rotate-file';
 
 const timeFormat = winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' });
 const printFormat = winston.format.printf(
   ({ level, message, label, timestamp }) => {
-    return `${timestamp} |${level}| ${
+    return `${timestamp} [${level}] ${
       label ? ' [' + label + ']' : ''
     }${message}`;
   },
@@ -23,7 +25,9 @@ const printFormat = winston.format.printf(
               new winston.transports.Console({
                 level: 'debug',
                 format: winston.format.combine(
-                  winston.format.colorize(),
+                  winston.format.colorize({
+                    all: true,
+                  }),
                   winston.format.simple(),
                   timeFormat,
                   printFormat,
@@ -31,13 +35,19 @@ const printFormat = winston.format.printf(
               }),
             ]
           : [
-              new winston.transports.File({
-                filename: 'logs/error.log',
-                level: 'error',
-              }),
-              new winston.transports.File({
-                filename: 'logs/combined.log',
+              new WinstonDaily({
                 level: 'http',
+                filename: 'logs/info/%DATE%.log',
+                datePattern: 'YYYY-MM-DD',
+                // zippedArchive: true, // 로그파일 새로 생성하면 이전 로그는 압축
+                // maxSize: '20m', // 현재 작성중인 로그 파일의 최대 용량
+                maxFiles: '1y',
+              }),
+              new WinstonDaily({
+                level: 'error',
+                filename: 'logs/error/%DATE%.log',
+                datePattern: 'YYYY-MM-DD',
+                maxFiles: '1y',
               }),
             ],
     }),
