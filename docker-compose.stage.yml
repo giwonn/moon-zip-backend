@@ -6,9 +6,11 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8010:80"
+      - "8010:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./privkey.pem:/etc/nginx/privkey.pem
+      - ./cert.pem:/etc/nginx/cert.pem
     restart: always
   server:
     image: moon-zip-backend

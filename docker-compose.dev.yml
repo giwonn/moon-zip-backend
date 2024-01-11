@@ -3,6 +3,13 @@
 version: '0.1'
 
 services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8010:80"
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf
+    restart: always
   server:
     image: moon-zip-backend
     build:
