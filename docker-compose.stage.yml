@@ -1,8 +1,15 @@
-# docker compose -f docker-compose.stage.yml up --build --force-recreate
+# docker compose -f docker-compose.stage.yml up --build -d --force-recreate
 # docker compose -f docker-compose.stage.yml down -v --rmi local
 version: '0.1'
 
 services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8010:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: always
   server:
     image: moon-zip-backend
     build:
@@ -11,7 +18,7 @@ services:
       target: production
     restart: always
     ports:
-      - '8010:3000'
+      - '3000:3000'
     depends_on:
       - db
       - redis
