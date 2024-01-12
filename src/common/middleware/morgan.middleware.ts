@@ -11,7 +11,8 @@ export class HttpLoggerMiddleware implements NestMiddleware {
 
     morgan(this.getFormat(), {
       stream: {
-        write: (message: string) => this.logger.http(message),
+        write: (message: string) =>
+          this.logger.http(message.substring(0, message.lastIndexOf('\n'))),
       },
     })(req, res, next);
   }

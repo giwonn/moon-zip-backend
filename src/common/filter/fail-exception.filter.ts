@@ -5,9 +5,12 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { RESPONSE_STATUS } from '@/common/constant/response-status.enum';
+import { LoggerClient } from '@/client/logger/logger.client';
 
 @Catch(HttpException)
 export class FailExceptionFilter implements ExceptionFilter {
+  constructor(private readonly logger: LoggerClient) {}
+
   catch(exception: HttpException, host: ArgumentsHost) {
     const statusCode = exception.getStatus();
     if (statusCode === 500) {
@@ -19,6 +22,8 @@ export class FailExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
 
     const message = exception.getResponse()['message'];
+
+    this.logger.warn(`FAIL - ${message}`);
 
     return response.status(statusCode).json({
       status: RESPONSE_STATUS.FAIL,
