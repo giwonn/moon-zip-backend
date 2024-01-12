@@ -9,6 +9,8 @@ services:
       - "8010:80"
     volumes:
       - ./nginx.dev.conf:/etc/nginx/nginx.conf
+    environment:
+      - TZ=Asia/Seoul
     restart: always
   server:
     image: moon-zip-backend
