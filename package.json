@@ -6,18 +6,18 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "start:dev": "npm run prisma:init && nest start --watch",
     "build": "nest build",
     "start": "nest start",
     "prisma:init": "npx prisma migrate dev && npx prisma generate && npx prisma migrate reset --force && npx prisma db seed",
-    "start:dev": "npm run prisma:init && nest start --watch",
-    "start:debug": "nest start --debug --watch",
     "start:prod": "npx prisma migrate deploy && node dist/src/main.js",
+    "start:debug": "nest start --debug --watch",
+    "dev:unit": "npm run prisma:init && jest --watchAll",
+    "dev:e2e": "npm run prisma:init && jest --config ./test/jest-e2e.json --watchAll",
     "test": "npm run prisma:init && jest",
     "test:cov": "npm run prisma:init && jest --coverage",
     "test:debug": "npm run prisma:init && node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "npm run prisma:init && jest --config ./test/jest-e2e.json",
-    "dev:unit": "npm run prisma:init && jest --watchAll",
-    "dev:e2e": "npm run prisma:init && jest --config ./test/jest-e2e.json --watchAll"
+    "test:e2e": "npm run prisma:init && jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
