@@ -1,5 +1,5 @@
 # docker compose -f docker-compose.dev.yml up --build --force-recreate
-# docker compose -f docker-compose.dev.yml down -v --rmi local
+# docker compose -f docker-compose.dev.yml down -v  --rmi local --remove-orphans --timeout 0
 version: '0.1'
 
 services:
@@ -24,7 +24,7 @@ services:
       - '3000:3000'
     volumes:
       - .:/usr/src/app
-      - server:/usr/src/app/node_modules
+      - /usr/src/app/node_modules
     environment:
       - TZ=Asia/Seoul
     depends_on:
@@ -47,6 +47,3 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - TZ=Asia/Seoul
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
-volumes:
-  server:
-
