@@ -53,7 +53,7 @@ jobs:
             sudo mv .env moon-zip-backend/
             
             sudo cp $RASP_SSL_PATH/privkey.pem moon-zip-backend
-            sudo cp $RASP_SSL_PATH/cert.pem moon-zip-backend
+            sudo cp $RASP_SSL_PATH/fullchain.pem moon-zip-backend
 
             cd moon-zip-backend
             sudo git pull origin develop
