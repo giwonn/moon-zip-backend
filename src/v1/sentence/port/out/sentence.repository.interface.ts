@@ -5,4 +5,5 @@ export interface ISentenceRepository {
   findByUserId(userId: string): Promise<Sentence[]>;
   count(userId: string): Promise<number>;
   recommend(userId: string): Promise<any>;
+  findMany(userId: string, bookId: string): Promise<any>;
 }

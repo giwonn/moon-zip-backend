@@ -109,7 +109,6 @@ export class TagRepository implements ITagRepository {
       },
       take: 5,
     });
-    console.log(tagsWithSentences);
-    // return tagsWithSentences;
+    return tagsWithSentences;
   }
 }

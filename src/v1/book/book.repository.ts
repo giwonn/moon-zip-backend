@@ -7,35 +7,11 @@ import { IBookRepository } from './port/out/book.repository.interface';
 @Injectable()
 export class BookRepository implements IBookRepository {
   constructor(private readonly prisma: PrismaRepository) {}
-  async create(book: Book, userId: string) {
+  async create(book: Book) {
     const createdBook = await this.prisma.book.create({
       data: book,
     });
-
-    const libary = new Library();
-
-    libary.bookId = createdBook.id;
-    libary.userId = userId;
-
-    await this.prisma.library.create({ data: libary });
-
     return createdBook;
-  }
-
-  async findOne(userId: string, bookId: string): Promise<any> {
-    const book_id = await this.prisma.library.findFirst({
-      select: {
-        bookId: true,
-      },
-      where: {
-        AND: {
-          bookId,
-          userId,
-        },
-      },
-    });
-
-    return book_id.bookId;
   }
 
   async findBook(bookId: string): Promise<any> {
@@ -43,28 +19,6 @@ export class BookRepository implements IBookRepository {
       where: {
         id: bookId,
       },
-    });
-
-    const sentence = await this.prisma.sentence.findMany({
-      where: {
-        bookId,
-      },
-      include: {
-        tags: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
-
-    book['sentences'] = [...sentence];
-
-    book['sentences'] = book['sentences'].map((sentence) => {
-      return {
-        ...sentence,
-        tags: sentence.tags.map((tag) => tag.name),
-      };
     });
 
     return book;

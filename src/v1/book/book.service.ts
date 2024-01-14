@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
+import { CreateLibraryDto } from '../library/dto/create-library.dto';
 import { IBookRepository } from './port/out/book.repository.interface';
-
+import { ILibraryRepository } from '../library/port/out/library.repository.interface';
+import { ISentenceRepository } from '../sentence/port/out/sentence.repository.interface';
 class BookSearchClient {
   private base_url: string;
   private api_key: string;
@@ -33,7 +35,7 @@ class BookSearchClient {
       // return response.data['documents'];
     } catch (error) {
       console.log(error);
-      // console.error(error);
+      console.error(error);
       return 'Err';
     }
   }
@@ -45,6 +47,10 @@ export class BookService {
 
   constructor(
     @Inject('BookRepository') private readonly bookRepository: IBookRepository,
+    @Inject('LibraryRepository')
+    private readonly libraryRepository: ILibraryRepository,
+    @Inject('SentenceRepository')
+    private readonly sentenceRepository: ISentenceRepository,
   ) {
     this.bookSearchClient = new BookSearchClient(
       'https://dapi.kakao.com/v3/',
@@ -53,7 +59,14 @@ export class BookService {
   }
 
   async create(CreateBookDto: CreateBookDto, userId: string) {
-    return await this.bookRepository.create(CreateBookDto.to(), userId);
+    const createdBook = await this.bookRepository.create(CreateBookDto.to());
+
+    const createLibraryDto = new CreateLibraryDto();
+    createLibraryDto.userId = userId;
+    createLibraryDto.bookId = createdBook.id;
+    await this.libraryRepository.create(createLibraryDto.to());
+
+    return createdBook;
   }
 
   async search(target: string, query: string) {
@@ -65,8 +78,19 @@ export class BookService {
   }
 
   async findOne(userId: string, bookId: string) {
-    const myBookId = await this.bookRepository.findOne(userId, bookId);
-    return await this.bookRepository.findBook(myBookId);
+    const my_book_id = await this.libraryRepository.findOne(userId, bookId);
+    const sentence = await this.sentenceRepository.findMany(userId, my_book_id);
+    const my_book = await this.bookRepository.findBook(my_book_id);
+    my_book['sentences'] = [...sentence];
+
+    my_book['sentences'] = my_book['sentences'].map((sentence) => {
+      return {
+        ...sentence,
+        tags: sentence.tags.map((tag) => tag.name),
+      };
+    });
+
+    return my_book;
   }
 
   async count(userId: string) {
