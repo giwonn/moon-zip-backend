@@ -39,15 +39,11 @@ const printFormat = winston.format.printf(
                 level: 'http',
                 filename: 'logs/info/%DATE%.log',
                 datePattern: 'YYYY-MM-DD',
-                // zippedArchive: true, // 로그파일 새로 생성하면 이전 로그는 압축
-                // maxSize: '20m', // 현재 작성중인 로그 파일의 최대 용량
-                maxFiles: '1y',
               }),
               new WinstonDaily({
                 level: 'error',
                 filename: 'logs/error/%DATE%.log',
                 datePattern: 'YYYY-MM-DD',
-                maxFiles: '1y',
               }),
             ],
     }),
