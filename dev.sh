@@ -5,7 +5,8 @@ docker_stop() {
 }
 
 docker_start() {
-  docker compose -f docker-compose.dev.yml up --build --force-recreate
+  docker compose -f docker-compose.dev.yml up --build --force-recreate -d
+  docker compose -f docker-compose.dev.yml logs -f $@
 }
 
 clear() {
@@ -22,4 +23,4 @@ trap clear EXIT
 docker_stop
 
 # 도커 컴포즈 실행
-docker_start
+docker_start "$@"
