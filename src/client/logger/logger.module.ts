@@ -14,38 +14,45 @@ const printFormat = winston.format.printf(
   },
 );
 
+const transports = () => {
+  const arr: any[] = [
+    new winston.transports.Console({
+      level: 'debug',
+      format: winston.format.combine(
+        winston.format.colorize({
+          all: true,
+        }),
+        winston.format.simple(),
+        timeFormat,
+        printFormat,
+      ),
+    }),
+  ];
+
+  if (process.env.NODE_ENV !== 'development') {
+    arr.push(
+      new WinstonDaily({
+        level: 'http',
+        filename: 'logs/info/%DATE%.log',
+        datePattern: 'YYYY-MM-DD',
+      }),
+      new WinstonDaily({
+        level: 'error',
+        filename: 'logs/error/%DATE%.log',
+        datePattern: 'YYYY-MM-DD',
+      }),
+    );
+  }
+
+  return arr;
+};
+
 @Global()
 @Module({
   imports: [
     WinstonModule.forRoot({
       format: winston.format.combine(timeFormat, printFormat),
-      transports:
-        process.env.NODE_ENV === 'development'
-          ? [
-              new winston.transports.Console({
-                level: 'debug',
-                format: winston.format.combine(
-                  winston.format.colorize({
-                    all: true,
-                  }),
-                  winston.format.simple(),
-                  timeFormat,
-                  printFormat,
-                ),
-              }),
-            ]
-          : [
-              new WinstonDaily({
-                level: 'http',
-                filename: 'logs/info/%DATE%.log',
-                datePattern: 'YYYY-MM-DD',
-              }),
-              new WinstonDaily({
-                level: 'error',
-                filename: 'logs/error/%DATE%.log',
-                datePattern: 'YYYY-MM-DD',
-              }),
-            ],
+      transports: transports(),
     }),
   ],
   exports: [LoggerClient],
