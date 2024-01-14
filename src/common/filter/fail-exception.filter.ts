@@ -22,7 +22,6 @@ export class FailExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
 
     const message = exception.getResponse()['message'];
-
     this.logger.warn(`FAIL - ${message}`);
 
     return response.status(statusCode).json({
