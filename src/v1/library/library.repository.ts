@@ -25,7 +25,7 @@ export class LibraryRepository implements ILibraryRepository {
       },
     });
 
-    return book_id.bookId;
+    return Boolean(book_id);
   }
 
   async getBookCount(userId: string) {

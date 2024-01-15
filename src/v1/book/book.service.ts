@@ -61,9 +61,7 @@ export class BookService {
   async create(CreateBookDto: CreateBookDto, userId: string) {
     const createdBook = await this.bookRepository.create(CreateBookDto.to());
 
-    const createLibraryDto = new CreateLibraryDto();
-    createLibraryDto.userId = userId;
-    createLibraryDto.bookId = createdBook.id;
+    const createLibraryDto = CreateLibraryDto.of(userId, createdBook.id);
     await this.libraryRepository.create(createLibraryDto.to());
 
     return createdBook;
@@ -78,19 +76,25 @@ export class BookService {
   }
 
   async findOne(userId: string, bookId: string) {
-    const my_book_id = await this.libraryRepository.findOne(userId, bookId);
-    const sentence = await this.sentenceRepository.findMany(userId, my_book_id);
-    const my_book = await this.bookRepository.findBook(my_book_id);
-    my_book['sentences'] = [...sentence];
+    const isBookExist = await this.libraryRepository.findOne(userId, bookId);
+    if (!isBookExist) {
+      return null;
+    }
 
-    my_book['sentences'] = my_book['sentences'].map((sentence) => {
-      return {
-        ...sentence,
-        tags: sentence.tags.map((tag) => tag.name),
-      };
-    });
+    const [sentences, book] = await Promise.all([
+      this.sentenceRepository.findMany(userId, bookId),
+      this.bookRepository.findBook(bookId),
+    ]);
 
-    return my_book;
+    const sentencesWithTag = sentences.map((sentence) => ({
+      ...sentence,
+      tags: sentence.tags.map((tag) => tag.name),
+    }));
+
+    return {
+      ...book,
+      sentences: sentencesWithTag,
+    };
   }
 
   async count(userId: string) {
