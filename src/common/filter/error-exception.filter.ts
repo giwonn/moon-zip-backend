@@ -30,7 +30,7 @@ export class ErrorExceptionFilter implements ExceptionFilter {
 
     return response.status(statusCode).json({
       status: RESPONSE_STATUS.ERROR,
-      message: 'Internal Server Error',
+      messages: ['Internal Server Error'],
       url: request.url,
     });
   }
