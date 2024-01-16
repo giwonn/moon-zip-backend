@@ -91,4 +91,24 @@ export class TagRepository implements ITagRepository {
       },
     });
   }
+
+  async findRecent(userId: string) {
+    const tagsWithSentences = await this.prisma.tag.findMany({
+      where: {
+        userId: userId,
+      },
+      // include: {
+      //   sentence: {
+      //     include: {
+      //       book: true,
+      //     },
+      //   },
+      // },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 5,
+    });
+    return tagsWithSentences;
+  }
 }

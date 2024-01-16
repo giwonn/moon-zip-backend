@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
+import { CreateLibraryDto } from '../library/dto/create-library.dto';
 import { IBookRepository } from './port/out/book.repository.interface';
-
+import { ILibraryRepository } from '../library/port/out/library.repository.interface';
+import { ISentenceRepository } from '../sentence/port/out/sentence.repository.interface';
 class BookSearchClient {
   private base_url: string;
   private api_key: string;
@@ -32,8 +34,8 @@ class BookSearchClient {
       return data['documents'];
       // return response.data['documents'];
     } catch (error) {
-      console.log(error)
-      // console.error(error);
+      console.log(error);
+      console.error(error);
       return 'Err';
     }
   }
@@ -45,6 +47,10 @@ export class BookService {
 
   constructor(
     @Inject('BookRepository') private readonly bookRepository: IBookRepository,
+    @Inject('LibraryRepository')
+    private readonly libraryRepository: ILibraryRepository,
+    @Inject('SentenceRepository')
+    private readonly sentenceRepository: ISentenceRepository,
   ) {
     this.bookSearchClient = new BookSearchClient(
       'https://dapi.kakao.com/v3/',
@@ -52,11 +58,46 @@ export class BookService {
     );
   }
 
-  async create(CreateBookDto: CreateBookDto) {
-    return await this.bookRepository.create(CreateBookDto.to());
+  async create(CreateBookDto: CreateBookDto, userId: string) {
+    const createdBook = await this.bookRepository.create(CreateBookDto.to());
+
+    const createLibraryDto = CreateLibraryDto.of(userId, createdBook.id);
+    await this.libraryRepository.create(createLibraryDto.to());
+
+    return createdBook;
   }
 
   async search(target: string, query: string) {
     return await this.bookSearchClient.searchBooks(target, query);
+  }
+
+  async findAll(userId: string) {
+    return await this.bookRepository.findAll(userId);
+  }
+
+  async findOne(userId: string, bookId: string) {
+    const isBookExist = await this.libraryRepository.findOne(userId, bookId);
+    if (!isBookExist) {
+      return null;
+    }
+
+    const [sentences, book] = await Promise.all([
+      this.sentenceRepository.findMany(userId, bookId),
+      this.bookRepository.findBook(bookId),
+    ]);
+
+    const sentencesWithTag = sentences.map((sentence) => ({
+      ...sentence,
+      tags: sentence.tags.map((tag) => tag.name),
+    }));
+
+    return {
+      ...book,
+      sentences: sentencesWithTag,
+    };
+  }
+
+  async count(userId: string) {
+    return await this.bookRepository.count(userId);
   }
 }

@@ -24,4 +24,8 @@ export class TagService {
   async findByUserId(userId: string) {
     return await this.tagRepository.findByUserId(userId);
   }
+
+  async findRecent(userId: string) {
+    return await this.tagRepository.findRecent(userId);
+  }
 }
