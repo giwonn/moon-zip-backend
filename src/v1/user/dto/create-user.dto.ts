@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { Builder } from 'builder-pattern';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../entities/user.entity';
@@ -9,6 +9,11 @@ export class CreateUserDto {
   @ApiProperty()
   @IsString()
   email: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  nickName: string | null;
 
   @ApiProperty()
   @IsString()
@@ -23,7 +28,12 @@ export class CreateUserDto {
   socialType: SOCIAL_TYPE;
 
   toUserEntity(): User {
-    return Builder<User>().id(v4()).macId(this.macId).email(this.email).build();
+    return Builder<User>()
+      .id(v4())
+      .macId(this.macId)
+      .email(this.email)
+      .nickname(this.nickName)
+      .build();
   }
 
   static from({

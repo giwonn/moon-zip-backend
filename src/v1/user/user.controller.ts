@@ -23,7 +23,7 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
-  @Get('/user-id/:userId')
+  @Get()
   @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: User })
   // @ApiNotFoundResponse({ type: UserError })

@@ -16,11 +16,12 @@ export class SocialAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     const { type, token, macId } = await this.getLoginInfo(request.body);
-    const { id, email } = await this.authenticate(type, token);
+    const { id, email, nickName } = await this.authenticate(type, token);
 
     const createUserDto = plainToInstance(CreateUserDto, {
       email,
       macId,
+      nickName,
       socialId: id,
       socialType: type,
     });
@@ -50,7 +51,7 @@ export class SocialAuthGuard implements CanActivate {
   async authenticate(type: SOCIAL_TYPE, token: string) {
     const strategy: Record<
       SOCIAL_TYPE,
-      (_: string) => Promise<{ id: string; email: string }>
+      (_: string) => Promise<{ id: string; email: string; nickName: string }>
     > = {
       [SOCIAL_TYPE.KAKAO]: this.kakaoAuthenticate,
       [SOCIAL_TYPE.NAVER]: this.naverAuthenticate,
@@ -67,7 +68,7 @@ export class SocialAuthGuard implements CanActivate {
   async kakaoAuthenticate(token: string) {
     const uri = `https://kapi.kakao.com/v2/user/me`;
     const userResponse = await fetch(
-      `${uri}?property_keys=["kakao_account.email"]`,
+      `${uri}?property_keys=["kakao_account.email", "kakao_account.profile_nickname"]`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -94,6 +95,7 @@ export class SocialAuthGuard implements CanActivate {
     return {
       id: userInfo.id.toString(),
       email: userInfo.kakao_account.email,
+      nickName: userInfo.kakao_account.nickname,
     };
   }
 
@@ -105,7 +107,11 @@ export class SocialAuthGuard implements CanActivate {
         },
       }).then((res) => res.json());
 
-      return response;
+      return {
+        id: response.id.toString(),
+        email: response.email,
+        nickName: response.nickname,
+      };
     } catch (e) {
       throw new BadRequestException(
         '인증되지 않은 naver 소셜 로그인 정보입니다.',
@@ -123,6 +129,10 @@ export class SocialAuthGuard implements CanActivate {
       },
     ).then((res) => res.json());
 
-    return { id: response.id, email: response.email };
+    return {
+      id: response.id,
+      email: response.email,
+      nickName: response.given_name,
+    };
   }
 }
