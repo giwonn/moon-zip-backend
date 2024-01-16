@@ -6,6 +6,25 @@ import { ISentenceRepository } from './port/out/sentence.repository.interface';
 @Injectable()
 export class SentenceRepository implements ISentenceRepository {
   constructor(private readonly prisma: PrismaRepository) {}
+
+  async findMany(userId: string, bookId: string): Promise<any> {
+    const sentences = await this.prisma.sentence.findMany({
+      where: {
+        bookId,
+        userId,
+      },
+      include: {
+        tags: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return sentences;
+  }
+
   async findByUserId(userId: string): Promise<any> {
     const sentences = await this.prisma.sentence.findMany({
       where: {

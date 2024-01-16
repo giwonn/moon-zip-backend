@@ -12,4 +12,8 @@ export class LibraryService {
   async create(createLibraryDto: CreateLibraryDto) {
     return await this.libraryRepository.create(createLibraryDto.to());
   }
+
+  async getBookCount(userId: string) {
+    return await this.libraryRepository.getBookCount(userId);
+  }
 }

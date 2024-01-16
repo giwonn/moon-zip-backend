@@ -11,4 +11,28 @@ export class LibraryRepository implements ILibraryRepository {
       data: library,
     });
   }
+
+  async findOne(userId: string, bookId: string): Promise<any> {
+    const book_id = await this.prisma.library.findFirst({
+      select: {
+        bookId: true,
+      },
+      where: {
+        AND: {
+          bookId,
+          userId,
+        },
+      },
+    });
+
+    return Boolean(book_id);
+  }
+
+  async getBookCount(userId: string) {
+    return await this.prisma.library.count({
+      where: {
+        userId,
+      },
+    });
+  }
 }

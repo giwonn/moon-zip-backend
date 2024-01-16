@@ -6,6 +6,7 @@ import {
   Param,
   Inject,
   ParseEnumPipe,
+  Headers,
 } from '@nestjs/common';
 import { IBookService } from './port/in/book.service.interface';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -29,7 +30,11 @@ export class BookController {
   @Post()
   @ApiOperation({ summary: '도서 생성' })
   @ApiCreatedResponse({ type: Book })
-  async create(@Body() createBookDto: CreateBookDto) {
+  async create(
+    @Headers('token') token: string,
+    @Body() createBookDto: CreateBookDto,
+  ) {
+    let validUserId = token; // Validate Logic
     const res = await this.bookService.search('isbn', createBookDto.id);
     const book = res[0];
 
@@ -69,7 +74,15 @@ export class BookController {
     createBookDto.url = url;
     createBookDto.id = isbn;
 
-    return await this.bookService.create(createBookDto);
+    return await this.bookService.create(createBookDto, validUserId);
+  }
+
+  @Get('detail/:id')
+  @ApiOperation({ summary: '도서 상세 조회' })
+  @ApiOkResponse({ type: Book })
+  async findOne(@Headers('token') token: string, @Param('id') id: string) {
+    let validUserId = token; // Validate Logic
+    return await this.bookService.findOne(validUserId, id);
   }
 
   @Get(':target/:query')
@@ -77,5 +90,21 @@ export class BookController {
   @ApiOkResponse({ type: Book })
   async search(@Param() { target, query }: SearchBookDto) {
     return await this.bookService.search(target, query);
+  }
+
+  @Get('list')
+  @ApiOperation({ summary: '도서 목록 조회' })
+  @ApiOkResponse({ type: Book })
+  async findAll(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.bookService.findAll(validUserId);
+  }
+
+  @Get('count')
+  @ApiOperation({ summary: '도서 수 조회' })
+  @ApiOkResponse({ type: Number })
+  async count(@Headers('token') token: string) {
+    let validUserId = token; // Validate Logic
+    return await this.bookService.count(validUserId);
   }
 }
