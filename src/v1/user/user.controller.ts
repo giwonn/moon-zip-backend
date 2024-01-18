@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Inject } from '@nestjs/common';
 import type { IUserService } from './port/in/user.service.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
@@ -8,6 +8,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { UserId } from '@/common/decorator/user-id.decorator';
 
 @Controller('user')
 @ApiTags('user')
@@ -27,7 +28,7 @@ export class UserController {
   @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: User })
   // @ApiNotFoundResponse({ type: UserError })
-  async findOneByUserId(@Param('userId') userId: string) {
+  async findOne(@UserId() userId: string) {
     return await this.userService.findOne(userId);
   }
 

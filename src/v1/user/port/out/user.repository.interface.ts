@@ -3,7 +3,7 @@ import { UpdateUserDto } from '@/v1/user/dto/update-user.dto';
 
 export interface IUserRepository {
   create(user: User): Promise<User>;
-  findOneById(userId: string): Promise<User | null>;
+  findOneById(id: string): Promise<User | null>;
   findOneByEmail(email: string): Promise<User | null>;
   findOneBySocialIdAndSocialType(
     socialId: string,

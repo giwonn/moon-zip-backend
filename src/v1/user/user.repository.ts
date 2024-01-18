@@ -12,10 +12,10 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async findOneById(userId: string) {
+  async findOneById(id: string) {
     return await this.prisma.user.findUnique({
       where: {
-        id: userId,
+        id,
       },
     });
   }

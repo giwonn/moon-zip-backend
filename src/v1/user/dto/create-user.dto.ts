@@ -32,7 +32,7 @@ export class CreateUserDto {
       .id(v4())
       .macId(this.macId)
       .email(this.email)
-      .nickname(this.nickName)
+      .nickName(this.nickName)
       .build();
   }
 
