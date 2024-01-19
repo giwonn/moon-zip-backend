@@ -17,16 +17,19 @@ jobs:
           RASP_SSL_PATH: ${{ secrets.RASP_SSL_PATH }}
           PRIVATE_ACCESS_TOKEN: ${{ secrets.PRIVATE_ACCESS_TOKEN }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_JWT_HOST: ${{ secrets.REDIS_JWT_HOST }}
+          REDIS_JWT_PASSWORD: ${{ secrets.REDIS_JWT_PASSWORD }}
+          REDIS_CACHE_HOST: ${{ secrets.REDIS_CACHE_HOST }}
+          REDIS_CACHE_PASSWORD: ${{ secrets.REDIS_CACHE_PASSWORD }}
+          ALADIN_API_KEY: ${{ secrets.ALADIN_API_KEY }}
+          KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RASP_HOST }}
           username: ${{ secrets.RASP_USERNAME }}
           password: ${{ secrets.RASP_PASSWORD }}
           port: ${{ secrets.RASP_PORT }}
-          envs: RASP_DATABASE_URL,PRIVATE_ACCESS_TOKEN,RASP_SSL_PATH,JWT_SECRET,REDIS_HOST,REDIS_PORT,REDIS_PASSWORD
+          envs: RASP_DATABASE_URL,PRIVATE_ACCESS_TOKEN,RASP_SSL_PATH,JWT_SECRET,REDIS_JWT_HOST,REDIS_JWT_PASSWORD,REDIS_CACHE_HOST,REDIS_CACHE_PASSWORD
           script: |
             set -e
             cd /usr/src
@@ -47,9 +50,15 @@ jobs:
             sudo echo "DATABASE_URL=\"${RASP_DATABASE_URL}\"" > ".env"
             sudo echo "RASP_SSL_PATH=\"${RASP_SSL_PATH}\"" >> ".env"
             sudo echo "JWT_SECRET=\"${JWT_SECRET}\"" >> ".env"
-            sudo echo "REDIS_HOST=\"${REDIS_HOST}\"" >> ".env"
-            sudo echo "REDIS_PORT=\"${REDIS_PORT}\"" >> ".env"
-            sudo echo "REDIS_PASSWORD=\"${REDIS_PASSWORD}\"" >> ".env"
+            
+            sudo echo "REDIS_JWT_HOST=\"${REDIS_JWT_HOST}\"" >> ".env"
+            sudo echo "REDIS_JWT_PASSWORD=\"${REDIS_JWT_PASSWORD}\"" >> ".env"
+            sudo echo "REDIS_CACHE_HOST=\"${REDIS_CACHE_HOST}\"" >> ".env"
+            sudo echo "REDIS_CACHE_PASSWORD=\"${REDIS_CACHE_PASSWORD}\"" >> ".env"
+            
+            sudo echo "ALADIN_API_KEY=\"${ALADIN_API_KEY}\"" >> ".env"
+            sudo echo "KAKAO_API_KEY=\"${KAKAO_API_KEY}\"" >> ".env"
+            
             sudo mv .env moon-zip-backend/
             
             sudo cp $RASP_SSL_PATH/privkey.pem moon-zip-backend
