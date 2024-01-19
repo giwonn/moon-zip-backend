@@ -29,7 +29,8 @@ services:
       - TZ=Asia/Seoul
     depends_on:
       - db
-      - redis
+      - redis-jwt
+      - redis-cache
   db:
     image: postgres:15-alpine
     ports:
@@ -41,16 +42,23 @@ services:
       - TZ=Asia/Seoul
     volumes:
       - db:/var/lib/postgresql/data
-  redis:
+  redis-jwt:
     image: redis:latest
-    ports:
-      - '${REDIS_PORT}:6379'
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_JWT_PASSWORD}
       - TZ=Asia/Seoul
-    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    command: ["redis-server", "--requirepass", "${REDIS_JWT_PASSWORD}"]
     volumes:
-      - redis:/data
+      - jwt-server:/data
+  redis-cache:
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=${REDIS_CACHE_PASSWORD}
+      - TZ=Asia/Seoul
+    command: ["redis-server", "--requirepass", "${REDIS_CACHE_PASSWORD}"]
+    volumes:
+      - cache-server:/data
 volumes:
   db:
-  redis:
+  jwt-server:
+  cache-server:

@@ -6,7 +6,7 @@ docker_stop() {
 
 docker_start() {
   docker compose -f docker-compose.dev.yml up --build --force-recreate -d
-  docker compose -f docker-compose.dev.yml logs -f $@
+  docker compose -f docker-compose.dev.yml logs -f "$@"
 }
 
 clear() {

@@ -8,7 +8,7 @@ import { TagModule } from '@/v1/tag/tag.module';
 import { LibraryModule } from '@/v1/library/library.module';
 import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
-import { RedisModule } from '@/client/redis/redis.module';
+import { RedisJwtModule } from '@/client/redis-jwt/redis-jwt.module';
 import { JwtModule } from '@/client/jwt/jwt.module';
 import { AccessTokenGuard } from '@/common/guard/global/access-token.guard';
 import { LoggerModule } from '@/client/logger/logger.module';
@@ -17,6 +17,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { SuccessResponseInterceptor } from '@/common/interceptor/success-response.interceptor';
 import { ErrorExceptionFilter } from '@/common/filter/error-exception.filter';
 import { FailExceptionFilter } from '@/common/filter/fail-exception.filter';
+import { RedisCacheModule } from '@/client/redis-cache/redis-cache.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { FailExceptionFilter } from '@/common/filter/fail-exception.filter';
       isGlobal: true,
     }),
     LoggerModule,
-    RedisModule,
+    RedisJwtModule,
+    RedisCacheModule,
     PrismaModule,
     JwtModule,
     UserModule,
