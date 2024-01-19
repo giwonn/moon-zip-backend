@@ -3,7 +3,7 @@ import { RedisService } from '@songkeys/nestjs-redis';
 import { REFRESH_TOKEN_EXPIRATION_TIME } from '@/v1/auth/constant/token.constant';
 
 @Injectable()
-export class RedisClient {
+export class RedisJwtClient {
   private readonly redisClient: ReturnType<RedisService['getClient']>;
 
   constructor(private readonly redisService: RedisService) {
