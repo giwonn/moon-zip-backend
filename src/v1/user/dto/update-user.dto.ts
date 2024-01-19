@@ -15,7 +15,7 @@ export class UpdateUserDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  nickname?: string;
+  nickName?: string;
 
   @ApiProperty()
   @IsString()
@@ -25,19 +25,19 @@ export class UpdateUserDto {
   static from({
     email,
     macId,
-    nickname,
+    nickName,
     imageUrl,
   }: {
     email?: string;
     macId?: string;
-    nickname?: string;
+    nickName?: string;
     imageUrl?: string;
   }) {
     const dto = new UpdateUserDto();
 
     if (email) dto.email = email;
     if (macId) dto.macId = macId;
-    if (nickname) dto.nickname = nickname;
+    if (nickName) dto.nickName = nickName;
     if (imageUrl) dto.imageUrl = imageUrl;
 
     return dto;
