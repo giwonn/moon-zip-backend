@@ -15,7 +15,7 @@ async function createUser() {
     {
       email: 'alice@prisma.io',
       macId: 'macId1',
-      nickname: 'Alice',
+      nickName: 'Alice',
       id: '85322046-2031-4fcf-843d-3d8cb1347ed9',
     },
   ];

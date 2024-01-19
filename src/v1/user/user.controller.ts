@@ -8,6 +8,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { UserId } from '@/common/decorator/user-id.decorator';
 
 @Controller('user')
 @ApiTags('user')
@@ -23,11 +24,11 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
-  @Get('/user-id/:userId')
+  @Get('me')
   @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: User })
   // @ApiNotFoundResponse({ type: UserError })
-  async findOneByUserId(@Param('userId') userId: string) {
+  async findOneByUserId(@UserId() userId: string) {
     return await this.userService.findOne(userId);
   }
 
