@@ -52,6 +52,8 @@ export class AccessTokenGuard extends BearerTokenGuard {
       );
     }
 
+    request.userId = request.headers['user-id'];
+
     return true;
   }
 }
