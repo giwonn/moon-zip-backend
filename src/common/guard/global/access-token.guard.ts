@@ -46,13 +46,11 @@ export class AccessTokenGuard extends BearerTokenGuard {
   }
 
   devAuthenticate(request: any) {
-    if (!request.headers.user_id) {
+    if (!request.headers['user-id']) {
       throw new BadRequestException(
-        'dev환경에서는 액세스토큰 미사용시 header에 user_id라는 key로 userId를 넣어주어야 합니다.',
+        'dev환경에서는 액세스토큰 미사용시 header에 user-id라는 key로 userId를 넣어주어야 합니다.',
       );
     }
-
-    request.userId = request.headers.user_id;
 
     return true;
   }
