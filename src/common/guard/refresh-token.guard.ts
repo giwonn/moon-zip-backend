@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtClient } from '@/client/jwt/jwt.client';
-import { RedisClient } from '@/client/redis/redis.client';
+import { RedisJwtClient } from '@/client/redis-jwt/redis-jwt.client';
 import { TokenExpiredError } from '@nestjs/jwt';
 import { BearerTokenGuard } from '@/common/guard/bearer-token.guard';
 import { LoggerClient } from '@/client/logger/logger.client';
@@ -13,7 +13,7 @@ import { LoggerClient } from '@/client/logger/logger.client';
 export class RefreshTokenGuard extends BearerTokenGuard {
   constructor(
     readonly jwtClient: JwtClient,
-    private readonly redisClient: RedisClient,
+    private readonly redisClient: RedisJwtClient,
     private readonly loggerClient: LoggerClient,
   ) {
     super(jwtClient);
