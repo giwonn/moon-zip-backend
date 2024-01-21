@@ -18,12 +18,14 @@ import { SuccessResponseInterceptor } from '@/common/interceptor/success-respons
 import { ErrorExceptionFilter } from '@/common/filter/error-exception.filter';
 import { FailExceptionFilter } from '@/common/filter/fail-exception.filter';
 import { RedisCacheModule } from '@/client/redis-cache/redis-cache.module';
+import { HttpModule } from '@/client/http/http.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    HttpModule,
     LoggerModule,
     RedisJwtModule,
     RedisCacheModule,
