@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaRepository } from '../../client/prisma/prisma.repository';
+import { PrismaRepository } from '@/client/prisma/prisma.repository';
 import { Book } from './entities/book.entity';
-import { Library } from '../library/entities/library.entity';
 import { IBookRepository } from './port/out/book.repository.interface';
 
 @Injectable()
@@ -43,6 +42,16 @@ export class BookRepository implements IBookRepository {
     });
 
     return books;
+  }
+
+  async upsert(book: Book) {
+    return await this.prisma.book.upsert({
+      where: {
+        id: book.id,
+      },
+      update: book,
+      create: book,
+    });
   }
 
   async count(userId: string): Promise<any> {

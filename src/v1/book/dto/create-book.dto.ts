@@ -36,4 +36,22 @@ export class CreateBookDto {
       .publishDate(this.publishDate)
       .build();
   }
+
+  static fromKakaoBook(kakaoBook: any) {
+    const dto = new CreateBookDto();
+    dto.id = kakaoBook.isbn.split(' ').at(-1);
+    dto.title = kakaoBook.title;
+    dto.contents = kakaoBook.contents;
+    dto.url = kakaoBook.url;
+    dto.authors = kakaoBook.authors;
+    dto.translators = kakaoBook.translators;
+    dto.publisher = kakaoBook.publisher;
+    dto.price = kakaoBook.price;
+    dto.salePrice = kakaoBook.sale_price;
+    dto.thumbnailUrl = kakaoBook.thumbnail;
+    dto.status = kakaoBook.status;
+    dto.publishDate = kakaoBook.datetime;
+
+    return dto;
+  }
 }
