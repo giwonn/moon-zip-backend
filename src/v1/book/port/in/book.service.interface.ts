@@ -8,4 +8,5 @@ export interface IBookService {
   findOne(bookId: string, userId: string): Promise<any>;
   findBook(bookId: string): Promise<any>;
   count(userId: string): Promise<any>;
+  getWeeklyTop50(): Promise<Book[]>;
 }

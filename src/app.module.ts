@@ -19,6 +19,7 @@ import { ErrorExceptionFilter } from '@/common/filter/error-exception.filter';
 import { FailExceptionFilter } from '@/common/filter/fail-exception.filter';
 import { RedisCacheModule } from '@/client/redis-cache/redis-cache.module';
 import { HttpModule } from '@/client/http/http.module';
+import { BatchModule } from '@/scheduler/batch.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { HttpModule } from '@/client/http/http.module';
     LibraryModule,
     AuthModule,
     SocialUserModule,
+    BatchModule,
   ],
   providers: [
     {

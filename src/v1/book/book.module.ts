@@ -14,5 +14,6 @@ import { toProvider } from '../../libs/util';
     LibraryRepository,
     SentenceRepository,
   ),
+  exports: toProvider(BookService, BookRepository),
 })
 export class BookModule {}
