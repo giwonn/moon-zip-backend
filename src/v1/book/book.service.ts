@@ -4,6 +4,8 @@ import { CreateLibraryDto } from '../library/dto/create-library.dto';
 import { IBookRepository } from './port/out/book.repository.interface';
 import { ILibraryRepository } from '../library/port/out/library.repository.interface';
 import { ISentenceRepository } from '../sentence/port/out/sentence.repository.interface';
+import { RedisCacheClient } from '@/client/redis-cache/redis-cache.client';
+import { Book } from '@/v1/book/entities/book.entity';
 class BookSearchClient {
   private base_url: string;
   private api_key: string;
@@ -51,6 +53,7 @@ export class BookService {
     private readonly libraryRepository: ILibraryRepository,
     @Inject('SentenceRepository')
     private readonly sentenceRepository: ISentenceRepository,
+    private readonly redisCacheClient: RedisCacheClient,
   ) {
     this.bookSearchClient = new BookSearchClient(
       'https://dapi.kakao.com/v3/',
@@ -99,5 +102,11 @@ export class BookService {
 
   async count(userId: string) {
     return await this.bookRepository.count(userId);
+  }
+
+  async getWeeklyTop50() {
+    return await this.redisCacheClient
+      .get('best-seller')
+      .then<Book[]>((res) => (res ? JSON.parse(res) : []));
   }
 }

@@ -34,7 +34,7 @@ export class BookController {
     @Headers('token') token: string,
     @Body() createBookDto: CreateBookDto,
   ) {
-    let validUserId = token; // Validate Logic
+    const validUserId = token; // Validate Logic
     const res = await this.bookService.search('isbn', createBookDto.id);
     const book = res[0];
 
@@ -81,7 +81,7 @@ export class BookController {
   @ApiOperation({ summary: '도서 상세 조회' })
   @ApiOkResponse({ type: Book })
   async findOne(@Headers('token') token: string, @Param('id') id: string) {
-    let validUserId = token; // Validate Logic
+    const validUserId = token; // Validate Logic
     return await this.bookService.findOne(validUserId, id);
   }
 
@@ -96,7 +96,7 @@ export class BookController {
   @ApiOperation({ summary: '도서 목록 조회' })
   @ApiOkResponse({ type: Book })
   async findAll(@Headers('token') token: string) {
-    let validUserId = token; // Validate Logic
+    const validUserId = token; // Validate Logic
     return await this.bookService.findAll(validUserId);
   }
 
@@ -104,7 +104,14 @@ export class BookController {
   @ApiOperation({ summary: '도서 수 조회' })
   @ApiOkResponse({ type: Number })
   async count(@Headers('token') token: string) {
-    let validUserId = token; // Validate Logic
+    const validUserId = token; // Validate Logic
     return await this.bookService.count(validUserId);
+  }
+
+  @Get('best-seller')
+  @ApiOperation({ summary: '주간 베스트셀러 조회' })
+  @ApiOkResponse({ type: Array<Book> })
+  async bestSeller() {
+    return await this.bookService.getWeeklyTop50();
   }
 }
