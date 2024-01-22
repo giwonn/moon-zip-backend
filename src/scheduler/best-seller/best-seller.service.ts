@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { HttpClientService } from '@/client/http/http-client.service';
+import { HttpService } from '@/client/http/http.service';
 import { ConfigService } from '@nestjs/config';
 import { CreateBookDto } from '@/v1/book/dto/create-book.dto';
 import { CacheServerService } from '@/client/cache-server/cache-server.service';
@@ -11,14 +11,14 @@ import { BookRepository } from '@/v1/book/book.repository';
 export class BestSellerService implements OnModuleInit {
   constructor(
     private readonly loggerClient: LoggerService,
-    private readonly httpClientService: HttpClientService,
+    private readonly httpClientService: HttpService,
     private readonly configService: ConfigService,
     private readonly cacheClient: CacheServerService,
     private readonly bookRepository: BookRepository,
   ) {}
 
   async onModuleInit() {
-    if (this.configService.get('NODE_ENV') === 'development') return;
+    // if (this.configService.get('NODE_ENV') === 'development') return;
 
     await this.allTop50();
   }
@@ -26,7 +26,7 @@ export class BestSellerService implements OnModuleInit {
   // 매주 일요일 자정에 실행
   @Cron(CronExpression.EVERY_WEEK)
   async allTop50() {
-    this.loggerClient.log('start fetch best-seller', BestSellerService.name);
+    this.loggerClient.log('fetch best-seller start');
 
     const bestSellers = await this._getTopNByAladin(50);
     const isbns = bestSellers.map(

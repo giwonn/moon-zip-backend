@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { HttpClientService } from '@/client/http/http-client.service';
-import { FetchService } from '@/client/http/fetch/fetch.service';
+import { HttpService } from '@/client/http/http.service';
+import { FetchClient } from '@/client/http/fetch/fetch.client';
 
 @Module({
-  providers: [{ provide: HttpClientService, useClass: FetchService }],
-  exports: [HttpClientService],
+  providers: [
+    { provide: HttpService, useFactory: () => new HttpService(FetchClient) },
+  ],
+  exports: [HttpService],
 })
 export class HttpModule {}
