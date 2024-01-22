@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaRepository } from '../../client/prisma/prisma.repository';
+import { PrismaService } from '@/client/prisma/prisma.service';
 import { Library } from './entities/library.entity';
-import { ILibraryRepository } from './port/out/library.repository.interface';
 
 @Injectable()
-export class LibraryRepository implements ILibraryRepository {
-  constructor(private readonly prisma: PrismaRepository) {}
+export class LibraryRepository {
+  constructor(private readonly prisma: PrismaService) {}
   create(library: Library) {
     return this.prisma.library.create({
       data: library,

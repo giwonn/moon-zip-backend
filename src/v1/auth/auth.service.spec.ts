@@ -4,19 +4,17 @@ import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 import { SOCIAL_TYPE } from './constant/auth.enum';
 import { User } from '@/v1/user/entities/user.entity';
 import { SocialUser } from '@/v1/social-user/entities/social-user.entity';
-import { toProvider } from '@/libs/util';
 import { ConfigService } from '@nestjs/config';
 import { mockUserService } from '@/v1/user/user.service.mock';
 import { mockSocialUserService } from '@/v1/social-user/social-user.service.mock';
-import type { IAuthService } from './port/in/auth.service.interface';
-import { RedisJwtClient } from '@/client/redis-jwt/redis-jwt.client';
+import { JwtServerService } from '@/client/jwt-server/jwt-server.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtClient } from '@/client/jwt/jwt.client';
 import { mockJwtClient } from '@/client/jwt/jwt.client.mock';
-import { mockRedisClient } from '@/client/redis-jwt/redis.client.mock';
+import { mockRedisClient } from '@/client/jwt-server/redis.client.mock';
 
 describe('AuthService', () => {
-  let authService: IAuthService;
+  let authService: AuthService;
   let jwtClient: JwtClient;
   let createUserDto: CreateUserDto;
   let user: User;
@@ -37,7 +35,7 @@ describe('AuthService', () => {
       id: 'b6c5634c-7439-4cd5-ac3e-a13e9cb2e51d',
       email: createUserDto.email,
       macId: createUserDto.macId,
-      nickname: null,
+      nickName: null,
       imageUrl: null,
       createdAt: createdDate,
       updatedAt: createdDate,
@@ -57,7 +55,7 @@ describe('AuthService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ...toProvider(AuthService),
+        AuthService,
         {
           provide: 'UserService',
           useValue: mockUserService,
@@ -73,7 +71,7 @@ describe('AuthService', () => {
           },
         },
         {
-          provide: RedisJwtClient,
+          provide: JwtServerService,
           useValue: mockRedisClient,
         },
         {
@@ -83,7 +81,7 @@ describe('AuthService', () => {
       ],
     }).compile();
 
-    authService = module.get<IAuthService>('AuthService');
+    authService = module.get<AuthService>('AuthService');
     jwtClient = module.get<JwtClient>(JwtClient);
 
     initCreateUserDto();
@@ -91,7 +89,8 @@ describe('AuthService', () => {
 
     mockUserService.create.mockResolvedValue(user);
     mockSocialUserService.create.mockResolvedValue(socialUser);
-    mockJwtClient.sign.mockReturnValue('test');
+    mockJwtClient.signAccessToken.mockReturnValue('test');
+    mockJwtClient.signRefreshToken.mockReturnValue('test');
   });
 
   describe('소셜 로그인', () => {

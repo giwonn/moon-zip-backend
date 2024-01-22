@@ -1,13 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
-import { ITagRepository } from './port/out/tag.repository.interface';
+import { TagRepository } from '@/v1/tag/tag.repository';
 
 @Injectable()
 export class TagService {
-  constructor(
-    @Inject('TagRepository')
-    private readonly tagRepository: ITagRepository,
-  ) {}
+  constructor(private readonly tagRepository: TagRepository) {}
 
   async create(createTagDto: CreateTagDto) {
     return await this.tagRepository.create(createTagDto.to());

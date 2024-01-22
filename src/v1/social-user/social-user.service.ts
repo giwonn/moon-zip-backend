@@ -1,14 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
-import type { ISocialUserService } from '@/v1/social-user/port/in/social-user.service.interface';
-import { ISocialUserRepository } from '@/v1/social-user/port/out/social-user.repository.interface';
+import { Injectable } from '@nestjs/common';
 import { CreateSocialUserDto } from '@/v1/social-user/dto/create-social-user.dto';
+import { SocialUserRepository } from '@/v1/social-user/social-user.repository';
 
 @Injectable()
-export class SocialUserService implements ISocialUserService {
-  constructor(
-    @Inject('SocialUserRepository')
-    private readonly socialUserRepository: ISocialUserRepository,
-  ) {}
+export class SocialUserService {
+  constructor(private readonly socialUserRepository: SocialUserRepository) {}
 
   async checkRegistered(userId: string, socialType: string) {
     const socialUser = await this.socialUserRepository.findOneByUserIdAndType(

@@ -1,31 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Inject,
-  ParseEnumPipe,
-  Headers,
-} from '@nestjs/common';
-import { IBookService } from './port/in/book.service.interface';
+import { Controller, Get, Post, Body, Param, Headers } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { SearchBookDto } from './dto/search-book.dto';
 import {
   ApiCreatedResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { Book } from './entities/book.entity';
+import { BookService } from '@/v1/book/book.service';
 
 @Controller('book')
 @ApiTags('book')
 export class BookController {
-  constructor(
-    @Inject('BookService') private readonly bookService: IBookService,
-  ) {}
+  constructor(private readonly bookService: BookService) {}
 
   @Post()
   @ApiOperation({ summary: '도서 생성' })
