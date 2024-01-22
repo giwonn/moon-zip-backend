@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { RedisModule } from '@songkeys/nestjs-redis';
-import { RedisJwtClient } from '@/client/redis-jwt/redis-jwt.client';
+import { RedisJwtService } from '@/client/jwt-server/redis/redis-jwt.service';
 
 @Global()
 @Module({
@@ -12,7 +12,7 @@ import { RedisJwtClient } from '@/client/redis-jwt/redis-jwt.client';
       },
     }),
   ],
-  exports: [RedisJwtClient],
-  providers: [RedisJwtClient],
+  exports: [RedisJwtService],
+  providers: [RedisJwtService],
 })
 export class RedisJwtModule {}

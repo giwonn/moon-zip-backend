@@ -1,16 +1,19 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { LoggerClientService } from '@/client/logger/logger-client.service';
+import { LoggerService } from '@/client/logger/logger.service';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class PrismaClientService
-  extends PrismaClient<Prisma.PrismaClientOptions, 'query' | 'error'>
+export class PrismaService
+  extends PrismaClient<
+    Prisma.PrismaClientOptions,
+    'query' | 'error' | 'info' | 'warn'
+  >
   implements OnModuleInit
 {
   constructor(
     private readonly configService: ConfigService,
-    private readonly loggerService: LoggerClientService,
+    private readonly loggerService: LoggerService,
   ) {
     super({
       log: [
@@ -23,11 +26,11 @@ export class PrismaClientService
           level: 'error',
         },
         {
-          emit: 'stdout',
+          emit: 'event',
           level: 'info',
         },
         {
-          emit: 'stdout',
+          emit: 'event',
           level: 'warn',
         },
       ],
@@ -41,8 +44,16 @@ export class PrismaClientService
       });
     }
 
+    this.$on('info', (event) => {
+      this.loggerService.log(event.message);
+    });
+
+    this.$on('warn', (event) => {
+      this.loggerService.warn(event.message);
+    });
+
     this.$on('error', (event) => {
-      this.loggerService.debug(event.target);
+      this.loggerService.error(event.message);
     });
 
     await this.$connect();

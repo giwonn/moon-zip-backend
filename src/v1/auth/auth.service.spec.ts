@@ -9,11 +9,11 @@ import { ConfigService } from '@nestjs/config';
 import { mockUserService } from '@/v1/user/user.service.mock';
 import { mockSocialUserService } from '@/v1/social-user/social-user.service.mock';
 import type { IAuthService } from './port/in/auth.service.interface';
-import { RedisJwtClient } from '@/client/redis-jwt/redis-jwt.client';
+import { JwtServerService } from '@/client/jwt-server/jwt-server.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtClient } from '@/client/jwt/jwt.client';
 import { mockJwtClient } from '@/client/jwt/jwt.client.mock';
-import { mockRedisClient } from '@/client/redis-jwt/redis.client.mock';
+import { mockRedisClient } from '@/client/jwt-server/redis.client.mock';
 
 describe('AuthService', () => {
   let authService: IAuthService;
@@ -73,7 +73,7 @@ describe('AuthService', () => {
           },
         },
         {
-          provide: RedisJwtClient,
+          provide: JwtServerService,
           useValue: mockRedisClient,
         },
         {

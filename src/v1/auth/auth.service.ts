@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RedisJwtClient } from '@/client/redis-jwt/redis-jwt.client';
+import { JwtServerService } from '@/client/jwt-server/jwt-server.service';
 import { User } from '@/v1/user/entities/user.entity';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
 import { CreateSocialUserDto } from '@/v1/social-user/dto/create-social-user.dto';
@@ -11,7 +11,7 @@ import { JwtClient } from '@/client/jwt/jwt.client';
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
-    private readonly redisClient: RedisJwtClient,
+    private readonly redisClient: JwtServerService,
     private readonly jwtClient: JwtClient,
     @Inject('UserService') private readonly userService: IUserService,
     @Inject('SocialUserService')

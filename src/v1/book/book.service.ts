@@ -4,7 +4,7 @@ import { CreateLibraryDto } from '../library/dto/create-library.dto';
 import { IBookRepository } from './port/out/book.repository.interface';
 import { ILibraryRepository } from '../library/port/out/library.repository.interface';
 import { ISentenceRepository } from '../sentence/port/out/sentence.repository.interface';
-import { RedisCacheClient } from '@/client/redis-cache/redis-cache.client';
+import { CacheServerService } from '@/client/cache-server/cache-server.service';
 import { Book } from '@/v1/book/entities/book.entity';
 class BookSearchClient {
   private base_url: string;
@@ -53,7 +53,7 @@ export class BookService {
     private readonly libraryRepository: ILibraryRepository,
     @Inject('SentenceRepository')
     private readonly sentenceRepository: ISentenceRepository,
-    private readonly redisCacheClient: RedisCacheClient,
+    private readonly redisCacheClient: CacheServerService,
   ) {
     this.bookSearchClient = new BookSearchClient(
       'https://dapi.kakao.com/v3/',

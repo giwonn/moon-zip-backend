@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClientService } from '../../client/prisma/prisma-client.service';
+import { PrismaService } from '../../client/prisma/prisma.service';
 import { Sentence } from './entities/sentence.entity';
 import { ISentenceRepository } from './port/out/sentence.repository.interface';
 
 @Injectable()
 export class SentenceRepository implements ISentenceRepository {
-  constructor(private readonly prisma: PrismaClientService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async findMany(userId: string, bookId: string): Promise<any> {
     const sentences = await this.prisma.sentence.findMany({

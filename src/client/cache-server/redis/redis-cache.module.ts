@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { RedisModule } from '@songkeys/nestjs-redis';
-import { RedisCacheClient } from '@/client/redis-cache/redis-cache.client';
+import { RedisCacheService } from '@/client/cache-server/redis/redis-cache.service';
 
 @Global()
 @Module({
@@ -12,7 +12,7 @@ import { RedisCacheClient } from '@/client/redis-cache/redis-cache.client';
       },
     }),
   ],
-  exports: [RedisCacheClient],
-  providers: [RedisCacheClient],
+  exports: [RedisCacheService],
+  providers: [RedisCacheService],
 })
 export class RedisCacheModule {}

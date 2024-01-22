@@ -4,16 +4,16 @@ import { HttpClientService } from '@/client/http/http-client.service';
 import { ConfigService } from '@nestjs/config';
 import { CreateBookDto } from '@/v1/book/dto/create-book.dto';
 import { IBookRepository } from '@/v1/book/port/out/book.repository.interface';
-import { RedisCacheClient } from '@/client/redis-cache/redis-cache.client';
-import { LoggerClientService } from '@/client/logger/logger-client.service';
+import { CacheServerService } from '@/client/cache-server/cache-server.service';
+import { LoggerService } from '@/client/logger/logger.service';
 
 @Injectable()
 export class BestSellerService implements OnModuleInit {
   constructor(
-    private readonly loggerClient: LoggerClientService,
+    private readonly loggerClient: LoggerService,
     private readonly httpClientService: HttpClientService,
     private readonly configService: ConfigService,
-    private readonly cacheClient: RedisCacheClient,
+    private readonly cacheClient: CacheServerService,
     @Inject('BookRepository')
     private readonly bookRepository: IBookRepository,
   ) {}

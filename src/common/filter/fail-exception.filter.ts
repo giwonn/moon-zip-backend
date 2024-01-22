@@ -5,11 +5,11 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { RESPONSE_STATUS } from '@/common/constant/response-status.enum';
-import { WinstonClient } from '@/client/logger/winston/winston.client';
+import { LoggerService } from '@/client/logger/logger.service';
 
 @Catch(HttpException)
 export class FailExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: WinstonClient) {}
+  constructor(private readonly logger: LoggerService) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const statusCode = exception.getStatus();

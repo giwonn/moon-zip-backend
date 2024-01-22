@@ -1,10 +1,10 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import * as morgan from 'morgan';
-import { WinstonClient } from '@/client/logger/winston/winston.client';
+import { WinstonService } from '@/client/logger/winston/winston.service';
 
 @Injectable()
 export class HttpLoggerMiddleware implements NestMiddleware {
-  constructor(private logger: WinstonClient) {}
+  constructor(private logger: WinstonService) {}
 
   use(req: any, res: any, next: (error?: any) => void): any {
     this.getRequestIp();

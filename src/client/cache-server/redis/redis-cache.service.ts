@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '@songkeys/nestjs-redis';
+import { CacheServerService } from '@/client/cache-server/cache-server.service';
 
 @Injectable()
-export class RedisCacheClient {
+export class RedisCacheService extends CacheServerService {
   private readonly redisClient: ReturnType<RedisService['getClient']>;
 
   constructor(private readonly redisService: RedisService) {
+    super();
     this.redisClient = this.redisService.getClient();
   }
 
@@ -13,11 +15,11 @@ export class RedisCacheClient {
     return this.redisClient.get(key);
   }
 
-  set(key: string, value: string) {
-    return this.redisClient.set(key, value);
+  async set(key: string, value: string) {
+    await this.redisClient.set(key, value);
   }
 
   async delete(key: string) {
-    return await this.redisClient.del(key);
+    await this.redisClient.del(key);
   }
 }

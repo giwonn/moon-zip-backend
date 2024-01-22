@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { LoggerClientService } from '@/client/logger/logger-client.service';
+import { LoggerService } from '@/client/logger/logger.service';
 
 @Injectable()
-export class WinstonClient extends LoggerClientService {
+export class WinstonService extends LoggerService {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {

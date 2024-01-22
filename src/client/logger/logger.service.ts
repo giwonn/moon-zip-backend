@@ -1,4 +1,4 @@
-export abstract class LoggerClientService {
+export abstract class LoggerService {
   abstract debug(message: string, context?: string): void;
   abstract http(message: string): void;
   abstract log(message: string, context?: string): void;

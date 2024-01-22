@@ -1,10 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { WinstonModule as NestWinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-import { WinstonClient } from '@/client/logger/winston/winston.client';
+import { WinstonService } from '@/client/logger/winston/winston.service';
 import * as process from 'process';
 import * as WinstonDaily from 'winston-daily-rotate-file';
-import { LoggerClientService } from '@/client/logger/logger-client.service';
 
 const timeFormat = winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' });
 const printFormat = winston.format.printf(
@@ -56,7 +55,7 @@ const transports = () => {
       transports: transports(),
     }),
   ],
-  providers: [WinstonClient],
-  exports: [WinstonClient],
+  providers: [WinstonService],
+  exports: [WinstonService],
 })
 export class WinstonModule {}
