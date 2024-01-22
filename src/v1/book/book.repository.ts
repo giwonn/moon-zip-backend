@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/client/prisma/prisma.service';
 import { Book } from './entities/book.entity';
-import { IBookRepository } from './port/out/book.repository.interface';
 
 @Injectable()
-export class BookRepository implements IBookRepository {
+export class BookRepository {
   constructor(private readonly prisma: PrismaService) {}
   async create(book: Book) {
     const createdBook = await this.prisma.book.create({

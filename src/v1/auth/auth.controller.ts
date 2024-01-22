@@ -2,23 +2,22 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
-  Inject,
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { SocialAuthGuard } from '@/common/guard/social-auth.guard';
+import { SocialAuthGuard } from '@/pipeline/guard/social-auth.guard';
 import { CreateUserDto } from '@/v1/user/dto/create-user.dto';
-import { UserId } from '@/common/decorator/user-id.decorator';
-import { RefreshTokenGuard } from '@/common/guard/refresh-token.guard';
-import type { IAuthService } from '@/v1/auth/port/in/auth.service.interface';
-import type { IUserService } from '@/v1/user/port/in/user.service.interface';
-import { SocialUser } from '@/common/decorator/social-user.decorator';
+import { UserId } from '@/libs/decorator/user-id.decorator';
+import { RefreshTokenGuard } from '@/pipeline/guard/refresh-token.guard';
+import { SocialUser } from '@/libs/decorator/social-user.decorator';
+import { AuthService } from '@/v1/auth/auth.service';
+import { UserService } from '@/v1/user/user.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    @Inject('AuthService') private readonly authService: IAuthService,
-    @Inject('UserService') private readonly userService: IUserService,
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('login')

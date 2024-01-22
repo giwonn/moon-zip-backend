@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Inject,
-  Headers,
-} from '@nestjs/common';
-import { ITagService } from './port/in/tag.service.interface';
+import { Controller, Get, Post, Body, Param, Headers } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import {
   ApiCreatedResponse,
@@ -16,14 +7,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Tag } from './entities/tag.entity';
+import { TagService } from '@/v1/tag/tag.service';
 
 @Controller('tag')
 @ApiTags('tag')
 export class TagController {
-  constructor(
-    @Inject('TagService')
-    private readonly tagService: ITagService,
-  ) {}
+  constructor(private readonly tagService: TagService) {}
 
   @Post()
   @ApiOperation({ summary: '태그 생성' })

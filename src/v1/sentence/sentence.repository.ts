@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../client/prisma/prisma.service';
+import { PrismaService } from '@/client/prisma/prisma.service';
 import { Sentence } from './entities/sentence.entity';
-import { ISentenceRepository } from './port/out/sentence.repository.interface';
 
 @Injectable()
-export class SentenceRepository implements ISentenceRepository {
+export class SentenceRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findMany(userId: string, bookId: string): Promise<any> {

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { TokenExpiredError } from '@nestjs/jwt';
-import { BearerTokenGuard } from '@/common/guard/bearer-token.guard';
+import { BearerTokenGuard } from '@/pipeline/guard/bearer-token.guard';
 
 /**
  * auth 엔드포인트를 제외한 모든 엔드포인트에서 사용됨

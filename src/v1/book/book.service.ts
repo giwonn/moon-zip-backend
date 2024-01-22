@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { CreateLibraryDto } from '../library/dto/create-library.dto';
-import { IBookRepository } from './port/out/book.repository.interface';
-import { ILibraryRepository } from '../library/port/out/library.repository.interface';
-import { ISentenceRepository } from '../sentence/port/out/sentence.repository.interface';
 import { CacheServerService } from '@/client/cache-server/cache-server.service';
 import { Book } from '@/v1/book/entities/book.entity';
+import { BookRepository } from '@/v1/book/book.repository';
+import { LibraryRepository } from '@/v1/library/library.repository';
+import { SentenceRepository } from '@/v1/sentence/sentence.repository';
 class BookSearchClient {
   private base_url: string;
   private api_key: string;
@@ -48,11 +48,9 @@ export class BookService {
   private readonly bookSearchClient: BookSearchClient;
 
   constructor(
-    @Inject('BookRepository') private readonly bookRepository: IBookRepository,
-    @Inject('LibraryRepository')
-    private readonly libraryRepository: ILibraryRepository,
-    @Inject('SentenceRepository')
-    private readonly sentenceRepository: ISentenceRepository,
+    private readonly bookRepository: BookRepository,
+    private readonly libraryRepository: LibraryRepository,
+    private readonly sentenceRepository: SentenceRepository,
     private readonly redisCacheClient: CacheServerService,
   ) {
     this.bookSearchClient = new BookSearchClient(

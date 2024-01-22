@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/client/prisma/prisma.service';
 import { Tag } from './entities/tag.entity';
-import { ITagRepository } from './port/out/tag.repository.interface';
 
 @Injectable()
-export class TagRepository implements ITagRepository {
+export class TagRepository {
   constructor(private readonly prisma: PrismaService) {}
   create(tag: Tag) {
     return this.prisma.tag.create({

@@ -1,12 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AccessTokenGuard } from '@/common/guard/global/access-token.guard';
-import { HttpLoggerMiddleware } from '@/common/middleware/morgan.middleware';
+import { AccessTokenGuard } from '@/pipeline/guard/global/access-token.guard';
+import { HttpLoggerMiddleware } from '@/pipeline/middleware/morgan.middleware';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { SuccessResponseInterceptor } from '@/common/interceptor/success-response.interceptor';
-import { ErrorExceptionFilter } from '@/common/filter/error-exception.filter';
-import { FailExceptionFilter } from '@/common/filter/fail-exception.filter';
-import { BatchModule } from '@/scheduler/batch.module';
+import { SuccessResponseInterceptor } from '@/pipeline/interceptor/success-response.interceptor';
+import { ErrorExceptionFilter } from '@/pipeline/filter/error-exception.filter';
+import { FailExceptionFilter } from '@/pipeline/filter/fail-exception.filter';
+import { SchedulerModule } from '@/scheduler/scheduler.module';
 import { ClientModule } from '@/client/client.module';
 import { ApiV1Module } from '@/v1/api-v1.module';
 
@@ -17,7 +17,7 @@ import { ApiV1Module } from '@/v1/api-v1.module';
     }),
     ClientModule,
     ApiV1Module,
-    BatchModule,
+    SchedulerModule,
   ],
   providers: [
     {

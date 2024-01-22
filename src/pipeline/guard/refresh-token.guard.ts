@@ -6,7 +6,7 @@ import {
 import { JwtClient } from '@/client/jwt/jwt.client';
 import { JwtServerService } from '@/client/jwt-server/jwt-server.service';
 import { TokenExpiredError } from '@nestjs/jwt';
-import { BearerTokenGuard } from '@/common/guard/bearer-token.guard';
+import { BearerTokenGuard } from '@/pipeline/guard/bearer-token.guard';
 import { WinstonService } from '@/client/logger/winston/winston.service';
 
 @Injectable()

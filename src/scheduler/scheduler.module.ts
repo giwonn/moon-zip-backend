@@ -5,4 +5,4 @@ import { BestSellerModule } from '@/scheduler/best-seller/best-seller.module';
 @Module({
   imports: [ScheduleModule.forRoot(), BestSellerModule],
 })
-export class BatchModule {}
+export class SchedulerModule {}

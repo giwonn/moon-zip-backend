@@ -5,7 +5,6 @@ import {
   HttpException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { RESPONSE_STATUS } from '@/common/constant/response-status.enum';
 import { LoggerService } from '@/client/logger/logger.service';
 
 @Catch()
@@ -29,7 +28,7 @@ export class ErrorExceptionFilter implements ExceptionFilter {
     );
 
     return response.status(statusCode).json({
-      status: RESPONSE_STATUS.ERROR,
+      status: 'error',
       messages: ['Internal Server Error'],
       url: request.url,
     });

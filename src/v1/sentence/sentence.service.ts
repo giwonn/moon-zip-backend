@@ -1,13 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateSentenceDto } from './dto/create-sentence.dto';
-import { ISentenceRepository } from './port/out/sentence.repository.interface';
+import { SentenceRepository } from '@/v1/sentence/sentence.repository';
 
 @Injectable()
 export class SentenceService {
-  constructor(
-    @Inject('SentenceRepository')
-    private readonly sentenceRepository: ISentenceRepository,
-  ) {}
+  constructor(private readonly sentenceRepository: SentenceRepository) {}
 
   async create(createSentenceDto: CreateSentenceDto) {
     return await this.sentenceRepository.create(createSentenceDto.to());

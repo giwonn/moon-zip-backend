@@ -1,11 +1,11 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpClientService } from '@/client/http/http-client.service';
 import { ConfigService } from '@nestjs/config';
 import { CreateBookDto } from '@/v1/book/dto/create-book.dto';
-import { IBookRepository } from '@/v1/book/port/out/book.repository.interface';
 import { CacheServerService } from '@/client/cache-server/cache-server.service';
 import { LoggerService } from '@/client/logger/logger.service';
+import { BookRepository } from '@/v1/book/book.repository';
 
 @Injectable()
 export class BestSellerService implements OnModuleInit {
@@ -14,8 +14,7 @@ export class BestSellerService implements OnModuleInit {
     private readonly httpClientService: HttpClientService,
     private readonly configService: ConfigService,
     private readonly cacheClient: CacheServerService,
-    @Inject('BookRepository')
-    private readonly bookRepository: IBookRepository,
+    private readonly bookRepository: BookRepository,
   ) {}
 
   async onModuleInit() {

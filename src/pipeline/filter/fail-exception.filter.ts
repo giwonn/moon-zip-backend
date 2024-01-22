@@ -4,7 +4,6 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { RESPONSE_STATUS } from '@/common/constant/response-status.enum';
 import { LoggerService } from '@/client/logger/logger.service';
 
 @Catch(HttpException)
@@ -25,7 +24,7 @@ export class FailExceptionFilter implements ExceptionFilter {
     this.logger.warn(`FAIL - ${message}`);
 
     return response.status(statusCode).json({
-      status: RESPONSE_STATUS.FAIL,
+      status: 'fail',
       messages: Array.isArray(message) ? message : [message],
       url: request.url,
     });
