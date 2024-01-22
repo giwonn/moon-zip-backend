@@ -1,16 +1,16 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { LoggerClient } from '@/client/logger/logger.client';
 import { HttpClientService } from '@/client/http/http-client.service';
 import { ConfigService } from '@nestjs/config';
 import { CreateBookDto } from '@/v1/book/dto/create-book.dto';
 import { IBookRepository } from '@/v1/book/port/out/book.repository.interface';
 import { RedisCacheClient } from '@/client/redis-cache/redis-cache.client';
+import { LoggerClientService } from '@/client/logger/logger-client.service';
 
 @Injectable()
 export class BestSellerService implements OnModuleInit {
   constructor(
-    private readonly loggerClient: LoggerClient,
+    private readonly loggerClient: LoggerClientService,
     private readonly httpClientService: HttpClientService,
     private readonly configService: ConfigService,
     private readonly cacheClient: RedisCacheClient,

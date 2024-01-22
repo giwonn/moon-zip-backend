@@ -7,14 +7,14 @@ import { JwtClient } from '@/client/jwt/jwt.client';
 import { RedisJwtClient } from '@/client/redis-jwt/redis-jwt.client';
 import { TokenExpiredError } from '@nestjs/jwt';
 import { BearerTokenGuard } from '@/common/guard/bearer-token.guard';
-import { LoggerClient } from '@/client/logger/logger.client';
+import { WinstonClient } from '@/client/logger/winston/winston.client';
 
 @Injectable()
 export class RefreshTokenGuard extends BearerTokenGuard {
   constructor(
     readonly jwtClient: JwtClient,
     private readonly redisClient: RedisJwtClient,
-    private readonly loggerClient: LoggerClient,
+    private readonly loggerClient: WinstonClient,
   ) {
     super(jwtClient);
   }
