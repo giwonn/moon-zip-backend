@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaRepository } from '@/client/prisma/prisma.repository';
-import type { ISocialUserRepository } from '@/v1/social-user/port/out/social-user.repository.interface';
+import { PrismaService } from '@/client/prisma/prisma.service';
 import type { SocialUser } from '@/v1/social-user/entities/social-user.entity';
 @Injectable()
-export class SocialUserRepository implements ISocialUserRepository {
-  constructor(private readonly prisma: PrismaRepository) {}
+export class SocialUserRepository {
+  constructor(private readonly prisma: PrismaService) {}
   create(socialUser: SocialUser) {
     return this.prisma.socialUser.create({
       data: socialUser,

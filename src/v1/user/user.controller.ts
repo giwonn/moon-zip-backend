@@ -1,5 +1,4 @@
-import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
-import type { IUserService } from './port/in/user.service.interface';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
   ApiCreatedResponse,
@@ -8,14 +7,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
-import { UserId } from '@/common/decorator/user-id.decorator';
+import { UserId } from '@/libs/decorator/user-id.decorator';
+import { UserService } from '@/v1/user/user.service';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-  constructor(
-    @Inject('UserService') private readonly userService: IUserService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiOperation({ summary: '유저 생성' })

@@ -1,4 +1,4 @@
-import type { HttpClient } from '@/client/http/http-client.interface';
+import type { HttpClient } from '@/client/http/http.client';
 import * as qs from 'qs';
 
 export class FetchClient implements HttpClient {

@@ -1,29 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Inject,
-  Headers,
-} from '@nestjs/common';
-import { ILibraryService } from './port/in/library.service.interface';
-import { CreateLibraryDto } from './dto/create-library.dto';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Controller, Get, Headers } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Library } from './entities/library.entity';
+import { LibraryService } from '@/v1/library/library.service';
 
 @Controller('library')
 @ApiTags('library')
 export class LibraryController {
-  constructor(
-    @Inject('LibraryService')
-    private readonly libraryService: ILibraryService,
-  ) {}
+  constructor(private readonly libraryService: LibraryService) {}
 
   // @Post()
   // @ApiOperation({ summary: '책장 생성' })

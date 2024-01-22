@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Inject,
-  Headers,
-} from '@nestjs/common';
-import { ISentenceService } from './port/in/sentence.service.interface';
+import { Controller, Get, Post, Body, Inject, Headers } from '@nestjs/common';
 import { CreateSentenceDto } from './dto/create-sentence.dto';
 import {
   ApiCreatedResponse,
@@ -16,14 +7,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Sentence } from './entities/sentence.entity';
+import { SentenceService } from '@/v1/sentence/sentence.service';
 
 @Controller('sentence')
 @ApiTags('sentence')
 export class SentenceController {
-  constructor(
-    @Inject('SentenceService')
-    private readonly sentenceService: ISentenceService,
-  ) {}
+  constructor(private readonly sentenceService: SentenceService) {}
 
   @Post()
   @ApiOperation({ summary: '문장 생성' })
