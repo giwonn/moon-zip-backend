@@ -35,9 +35,11 @@ export class BestSellerService implements OnModuleInit {
 
     const kakaoBooks = await this._getKakaoBooks(isbns);
 
-    const books = kakaoBooks.map((kakaoBook) =>
-      CreateBookDto.fromKakaoBook(kakaoBook).to(),
-    );
+    const books = kakaoBooks
+      .filter((item) => item)
+      .map((kakaoBook) => {
+        return CreateBookDto.fromKakaoBook(kakaoBook).to();
+      });
 
     for (const book of books) {
       await this.bookRepository.upsert(book);
@@ -52,7 +54,7 @@ export class BestSellerService implements OnModuleInit {
     const url = `http://www.aladin.co.kr/ttb/api/ItemList.aspx`;
     const queryParams = {
       TTBkey: this.configService.get('ALADIN_API_KEY'),
-      QueryType: 'BestSeller',
+      QueryType: 'BlogBest',
       MaxResults: n,
       SearchTarget: 'Book',
       output: 'js',
