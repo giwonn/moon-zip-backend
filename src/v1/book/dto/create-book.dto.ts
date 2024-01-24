@@ -16,8 +16,8 @@ export class CreateBookDto {
   publisher: string;
   price: number;
   salePrice: number;
-  thumbnailUrl: string;
-  status: string;
+  thumbnailUrl: string | null;
+  status: string | null;
   publishDate: Date;
 
   to(): Book {
@@ -48,8 +48,8 @@ export class CreateBookDto {
     dto.publisher = kakaoBook.publisher;
     dto.price = kakaoBook.price;
     dto.salePrice = kakaoBook.sale_price;
-    dto.thumbnailUrl = kakaoBook.thumbnail;
-    dto.status = kakaoBook.status;
+    dto.thumbnailUrl = kakaoBook.thumbnail || null;
+    dto.status = kakaoBook.status || null;
     dto.publishDate = kakaoBook.datetime;
 
     return dto;
