@@ -25,8 +25,8 @@ export class BestSellerService implements OnModuleInit {
     await this.allTop50();
   }
 
-  // 매주 일요일 자정에 실행
-  @Cron(CronExpression.EVERY_WEEK)
+  // 매일 오전 6시에 실행
+  @Cron(CronExpression.EVERY_DAY_AT_6AM)
   async allTop50() {
     this.loggerClient.log('fetch best-seller start');
 
