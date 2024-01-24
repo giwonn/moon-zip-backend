@@ -1,4 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@/client/http/http.service';
 import { ConfigService } from '@nestjs/config';
@@ -26,12 +30,8 @@ export class BestSellerService implements OnModuleInit {
   async allTop50() {
     this.loggerClient.log('fetch best-seller start');
 
-    const bestSellers = await this._getTopNByAladin(50);
-    const isbns = bestSellers.map(
-      (bestSeller) => bestSeller['isbn13'] ?? bestSeller['isbn'],
-    );
-
-    const kakaoBooks = await this._getKakaoBooks(isbns);
+    const bestSellerIsbns = await this._getTopNByAladin(50);
+    const kakaoBooks = await this._getKakaoBooks(bestSellerIsbns);
 
     const books = kakaoBooks
       .filter((item) => item)
@@ -59,11 +59,19 @@ export class BestSellerService implements OnModuleInit {
       Version: 20131101,
     };
 
-    return await this.httpClientService
+    const response = await this.httpClientService
       .get(url)
       .queryParams(queryParams)
-      .send()
-      .then((res) => res.item);
+      .send();
+
+    if (response.errorCode) {
+      throw new InternalServerErrorException(response);
+    }
+
+    return response.item.map(
+      (bestSeller: { [x: string]: any }) =>
+        bestSeller['isbn13'] ?? bestSeller['isbn'],
+    );
   }
 
   private async _getKakaoBooks(isbns: string[]) {
