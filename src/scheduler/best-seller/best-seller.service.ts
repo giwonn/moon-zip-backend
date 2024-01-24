@@ -18,8 +18,6 @@ export class BestSellerService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // if (this.configService.get('NODE_ENV') === 'development') return;
-
     await this.allTop50();
   }
 
