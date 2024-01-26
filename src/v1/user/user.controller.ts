@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
   ApiCreatedResponse,
@@ -28,6 +28,13 @@ export class UserController {
   // @ApiNotFoundResponse({ type: UserError })
   async findOneByUserId(@UserId() userId: string) {
     return await this.userService.findOne(userId);
+  }
+
+  @Put()
+  @ApiOperation({ summary: '유저 수정' })
+  @ApiOkResponse({ type: User })
+  async update(@UserId() userId: string, @Body() updateUserDto: CreateUserDto) {
+    return await this.userService.update(userId, updateUserDto);
   }
 
   // @Get()

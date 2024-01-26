@@ -6,6 +6,7 @@ import { TagModule } from '@/v1/tag/tag.module';
 import { LibraryModule } from '@/v1/library/library.module';
 import { AuthModule } from '@/v1/auth/auth.module';
 import { SocialUserModule } from '@/v1/social-user/social-user.module';
+import { LibraryBookModule } from '@/v1/library-book/library-book.module';
 
 const v1ApiModules = [
   UserModule,
@@ -15,6 +16,7 @@ const v1ApiModules = [
   LibraryModule,
   AuthModule,
   SocialUserModule,
+  LibraryBookModule,
 ];
 
 @Module({

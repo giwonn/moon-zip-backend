@@ -6,6 +6,7 @@ import { Book } from '@/v1/book/entities/book.entity';
 import { BookRepository } from '@/v1/book/book.repository';
 import { LibraryRepository } from '@/v1/library/library.repository';
 import { SentenceRepository } from '@/v1/sentence/sentence.repository';
+import { LibraryBookRepository } from '@/v1/library-book/library-book.repository';
 class BookSearchClient {
   private base_url: string;
   private api_key: string;
@@ -51,6 +52,7 @@ export class BookService {
     private readonly bookRepository: BookRepository,
     private readonly libraryRepository: LibraryRepository,
     private readonly sentenceRepository: SentenceRepository,
+    private readonly libraryBookRepository: LibraryBookRepository,
     private readonly redisCacheClient: CacheServerService,
   ) {
     this.bookSearchClient = new BookSearchClient(
@@ -62,7 +64,7 @@ export class BookService {
   async create(CreateBookDto: CreateBookDto, userId: string) {
     const createdBook = await this.bookRepository.create(CreateBookDto.to());
 
-    const createLibraryDto = CreateLibraryDto.of(userId, createdBook.id);
+    const createLibraryDto = CreateLibraryDto.of(userId);
     await this.libraryRepository.create(createLibraryDto.to());
 
     return createdBook;
@@ -72,19 +74,18 @@ export class BookService {
     return await this.bookSearchClient.searchBooks(target, query);
   }
 
-  async findAll(userId: string) {
-    return await this.bookRepository.findAll(userId);
+  async findManyByUserId(userId: string) {
+    // 유저의 라이브러리 가져와서
+    const libraries = await this.libraryRepository.findAll(userId);
+    const libraryIds = libraries.map((library) => library.id);
+
+    return await this.bookRepository.findManyByLibraryIds(libraryIds);
   }
 
-  async findOne(userId: string, bookId: string) {
-    const isBookExist = await this.libraryRepository.findOne(userId, bookId);
-    if (!isBookExist) {
-      return null;
-    }
-
+  async findOneByUserId(userId: string, bookId: string) {
     const [sentences, book] = await Promise.all([
       this.sentenceRepository.findMany(userId, bookId),
-      this.bookRepository.findBook(bookId),
+      this.bookRepository.findOne(bookId),
     ]);
 
     const sentencesWithTag = sentences.map((sentence) => ({

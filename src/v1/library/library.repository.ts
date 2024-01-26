@@ -11,20 +11,20 @@ export class LibraryRepository {
     });
   }
 
-  async findOne(userId: string, bookId: string): Promise<any> {
-    const book_id = await this.prisma.library.findFirst({
-      select: {
-        bookId: true,
-      },
+  async findAll(userId: string) {
+    return await this.prisma.library.findMany({
       where: {
-        AND: {
-          bookId,
-          userId,
-        },
+        userId,
       },
     });
+  }
 
-    return Boolean(book_id);
+  async findOne(id: string) {
+    return await this.prisma.library.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
   async getBookCount(userId: string) {
