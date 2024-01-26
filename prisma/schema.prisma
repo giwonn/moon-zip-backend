@@ -52,11 +52,11 @@ model Tag {
 }
 
 model Library {
-  id        String        @id(map: "library_pk") @db.Uuid
-  userId    String        @map("user_id") @db.Uuid
-  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
-  deletedAt DateTime?     @map("deleted_at") @db.Timestamp(6)
-  Librarys  LibraryBook[]
+  id           String        @id(map: "library_pk") @db.Uuid
+  userId       String        @map("user_id") @db.Uuid
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  deletedAt    DateTime?     @map("deleted_at") @db.Timestamp(6)
+  libraryBooks LibraryBook[]
 
   @@map("library")
 }
@@ -75,8 +75,8 @@ model Book {
   status       String?   @db.VarChar(20)
   publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
 
-  sentences Sentence[]
-  books     LibraryBook[]
+  sentences    Sentence[]
+  libraryBooks LibraryBook[]
 
   @@map("book")
 }

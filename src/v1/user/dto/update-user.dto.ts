@@ -35,10 +35,10 @@ export class UpdateUserDto {
   }) {
     const dto = new UpdateUserDto();
 
-    if (email) dto.email = email;
-    if (macId) dto.macId = macId;
-    if (nickName) dto.nickName = nickName;
-    if (imageUrl) dto.imageUrl = imageUrl;
+    dto.email = email;
+    dto.macId = macId;
+    dto.nickName = nickName;
+    dto.imageUrl = imageUrl;
 
     return dto;
   }

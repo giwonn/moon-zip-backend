@@ -70,7 +70,7 @@ export class BookController {
   @ApiOkResponse({ type: Book })
   async findOne(@Headers('token') token: string, @Param('id') id: string) {
     const validUserId = token; // Validate Logic
-    return await this.bookService.findOne(validUserId, id);
+    return await this.bookService.findOneByUserId(validUserId, id);
   }
 
   @Get(':target/:query')
@@ -85,7 +85,7 @@ export class BookController {
   @ApiOkResponse({ type: Book })
   async findAll(@Headers('token') token: string) {
     const validUserId = token; // Validate Logic
-    return await this.bookService.findAll(validUserId);
+    return await this.bookService.findManyByUserId(validUserId);
   }
 
   @Get('count')

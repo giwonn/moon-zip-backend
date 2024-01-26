@@ -6,41 +6,41 @@ import { Book } from './entities/book.entity';
 export class BookRepository {
   constructor(private readonly prisma: PrismaService) {}
   async create(book: Book) {
-    const createdBook = await this.prisma.book.create({
+    return await this.prisma.book.create({
       data: book,
     });
-    return createdBook;
   }
 
-  async findBook(bookId: string): Promise<any> {
-    const book = await this.prisma.book.findUnique({
+  async findOne(id: string): Promise<any> {
+    return await this.prisma.book.findUnique({
       where: {
-        id: bookId,
+        id,
       },
     });
-
-    return book;
   }
 
-  async findAll(userId: string): Promise<any> {
-    const bookIds = await this.prisma.library.findMany({
-      where: {
-        userId,
-      },
-      select: {
-        bookId: true,
-      },
-    });
-    const book_id_array = bookIds.map((book) => book.bookId);
-    const books = await this.prisma.book.findMany({
+  async findMany(ids: string[]) {
+    return await this.prisma.book.findMany({
       where: {
         id: {
-          in: book_id_array,
+          in: ids,
         },
       },
     });
+  }
 
-    return books;
+  async findManyByLibraryIds(libraryIds: string[]) {
+    return await this.prisma.book.findMany({
+      where: {
+        libraryBooks: {
+          some: {
+            libraryId: {
+              in: libraryIds,
+            },
+          },
+        },
+      },
+    });
   }
 
   async upsert(book: Book) {
