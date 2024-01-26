@@ -8,40 +8,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Book {
-  id           String    @id(map: "book_pk") @db.VarChar(100)
-  title        String?   @db.VarChar
-  contents     String?   @db.VarChar(1000)
-  url          String?   @db.VarChar
-  authors      String[]  @default([]) @db.VarChar
-  translators  String[]  @default([]) @db.VarChar
-  publisher    String?   @db.VarChar
-  price        Int?
-  salePrice    Int?      @map("sale_price")
-  thumbnailUrl String?   @map("thumbnail_url") @db.VarChar(200)
-  status       String?   @db.VarChar(20)
-  publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
-
-  sentences Sentence[]
-
-  @@map("book")
-}
-
-model Sentence {
-  seq       Int       @id(map: "sentence_pk") @default(autoincrement())
-  bookId    String    @map("book_id") @db.VarChar(50)
-  userId    String    @map("user_id") @db.Uuid
-  content   String    @db.VarChar(200)
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
-  tags      Tag[]
-
-  book Book @relation(fields: [bookId], references: [id])
-
-  @@index([bookId])
-  @@map("sentence")
-}
-
 model User {
   id        String    @id(map: "user_pk") @db.Uuid
   email     String    @unique(map: "email_uk") @db.VarChar(50)
@@ -73,7 +39,7 @@ model SocialUser {
 model Tag {
   name        String    @db.VarChar(50)
   userId      String    @map("user_id") @db.Uuid
-  bookId      String    @map("book_id") @db.VarChar(50)
+  bookId      String    @map("book_id") @db.VarChar(100)
   sentenceSeq Int       @map("sentence_seq")
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   deletedAt   DateTime? @map("deleted_at") @db.Timestamp(6)
@@ -86,11 +52,61 @@ model Tag {
 }
 
 model Library {
+  id        String        @id(map: "library_pk") @db.Uuid
+  userId    String        @map("user_id") @db.Uuid
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  deletedAt DateTime?     @map("deleted_at") @db.Timestamp(6)
+  Librarys  LibraryBook[]
+
+  @@map("library")
+}
+
+model Book {
+  id           String    @id(map: "book_pk") @db.VarChar(100)
+  title        String?   @db.VarChar
+  contents     String?   @db.VarChar(1000)
+  url          String?   @db.VarChar
+  authors      String[]  @default([]) @db.VarChar
+  translators  String[]  @default([]) @db.VarChar
+  publisher    String?   @db.VarChar
+  price        Int?
+  salePrice    Int?      @map("sale_price")
+  thumbnailUrl String?   @map("thumbnail_url") @db.VarChar(200)
+  status       String?   @db.VarChar(20)
+  publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
+
+  sentences Sentence[]
+  books     LibraryBook[]
+
+  @@map("book")
+}
+
+model LibraryBook {
+  libraryId String   @map("library_id") @db.Uuid
+  bookId    String   @map("book_id") @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  library Library @relation(fields: [libraryId], references: [id])
+  book    Book    @relation(fields: [bookId], references: [id])
+
+  @@id([libraryId, bookId], map: "library_book_pk")
+  @@index([libraryId])
+  @@index([bookId])
+  @@map("libaray_book")
+}
+
+model Sentence {
+  seq       Int       @id(map: "sentence_pk") @default(autoincrement())
+  bookId    String    @map("book_id") @db.VarChar(100)
   userId    String    @map("user_id") @db.Uuid
-  bookId    String    @map("book_id") @db.VarChar(50)
+  content   String    @db.VarChar(200)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+  tags      Tag[]
 
-  @@id([userId, bookId], map: "library_pk")
-  @@map("library")
+  book Book @relation(fields: [bookId], references: [id])
+
+  @@index([bookId])
+  @@map("sentence")
 }
