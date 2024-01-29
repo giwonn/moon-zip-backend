@@ -53,6 +53,8 @@ export class AccessTokenGuard extends BearerTokenGuard {
     }
 
     request.userId = request.headers['user-id'];
+    request.query.userId = request.headers['user-id'];
+    request.body.userId = request.headers['user-id'];
 
     return true;
   }

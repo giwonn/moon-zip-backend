@@ -1,14 +1,12 @@
-import { IsString } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
 import { Builder } from 'builder-pattern';
 import { ApiProperty } from '@nestjs/swagger';
 import { Sentence } from '../entities/sentence.entity';
 
 export class CreateSentenceDto {
   @ApiProperty({ example: '9788996991342' })
-  @IsString()
-  bookId: string;
-
-  userId: string;
+  @IsUUID()
+  libraryBookId: string;
 
   @ApiProperty({ example: '이것은 문장입니다.' })
   @IsString()
@@ -16,8 +14,7 @@ export class CreateSentenceDto {
 
   to(): Sentence {
     return Builder<Sentence>()
-      .bookId(this.bookId)
-      .userId(this.userId)
+      .libraryBookId(this.libraryBookId)
       .content(this.content)
       .build();
   }

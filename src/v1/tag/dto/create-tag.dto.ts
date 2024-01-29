@@ -17,17 +17,7 @@ export class CreateTagDto {
   @ApiProperty()
   sentenceSeq: number;
 
-  createdAt: Date;
-  deletedAt: Date | null;
-
   to(): Tag {
-    return Builder<Tag>()
-      .name(this.name)
-      .userId(this.userId)
-      .bookId(this.bookId)
-      .sentenceSeq(this.sentenceSeq)
-      .createdAt(this.createdAt)
-      .deletedAt(this.deletedAt)
-      .build();
+    return Builder<Tag>().name(this.name).build();
   }
 }

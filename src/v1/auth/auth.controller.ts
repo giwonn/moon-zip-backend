@@ -12,7 +12,9 @@ import { RefreshTokenGuard } from '@/pipeline/guard/refresh-token.guard';
 import { SocialUser } from '@/libs/decorator/social-user.decorator';
 import { AuthService } from '@/v1/auth/auth.service';
 import { UserService } from '@/v1/user/user.service';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller('auth')
 export class AuthController {
   constructor(

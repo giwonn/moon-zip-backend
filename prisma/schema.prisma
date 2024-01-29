@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id        String    @id(map: "user_pk") @db.Uuid
+  id        String    @id(map: "user_pk") @default(uuid()) @db.Uuid
   email     String    @unique(map: "email_uk") @db.VarChar(50)
   macId     String    @map("mac_id") @db.VarChar(100)
   nickName  String?   @map("nickname") @db.VarChar(20)
@@ -18,13 +18,13 @@ model User {
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
 
-  socialUsers SocialUser[]
+  socialUser SocialUser[]
 
   @@map("user")
 }
 
 model SocialUser {
-  userId String @map("user_id")
+  userId String @map("user_id") @db.Uuid
   type   String @db.VarChar(20)
   id     String @map("id") @db.VarChar(100)
 
@@ -36,27 +36,12 @@ model SocialUser {
   @@map("social_user")
 }
 
-model Tag {
-  name        String    @db.VarChar(50)
-  userId      String    @map("user_id") @db.Uuid
-  bookId      String    @map("book_id") @db.VarChar(100)
-  sentenceSeq Int       @map("sentence_seq")
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamp(6)
-
-  sentence Sentence @relation(fields: [sentenceSeq], references: [seq])
-
-  @@id([name, userId, bookId, sentenceSeq], map: "tag_pk")
-  @@index([sentenceSeq])
-  @@map("tag")
-}
-
 model Library {
-  id           String        @id(map: "library_pk") @db.Uuid
-  userId       String        @map("user_id") @db.Uuid
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
-  deletedAt    DateTime?     @map("deleted_at") @db.Timestamp(6)
-  libraryBooks LibraryBook[]
+  id          String        @id(map: "library_pk") @default(uuid()) @db.Uuid
+  userId      String        @map("user_id") @db.Uuid
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  deletedAt   DateTime?     @map("deleted_at") @db.Timestamp(6)
+  libraryBook LibraryBook[]
 
   @@map("library")
 }
@@ -75,38 +60,59 @@ model Book {
   status       String?   @db.VarChar(20)
   publishDate  DateTime? @map("publish_date") @db.Timestamp(6)
 
-  sentences    Sentence[]
-  libraryBooks LibraryBook[]
+  libraryBook LibraryBook[]
 
   @@map("book")
 }
 
 model LibraryBook {
-  libraryId String   @map("library_id") @db.Uuid
-  bookId    String   @map("book_id") @db.VarChar(100)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  id        String @id(map: "library_book_pk") @default(uuid()) @db.Uuid
+  libraryId String @map("library_id") @db.Uuid
+  bookId    String @map("book_id") @db.VarChar(100)
 
-  library Library @relation(fields: [libraryId], references: [id])
-  book    Book    @relation(fields: [bookId], references: [id])
+  library  Library    @relation(fields: [libraryId], references: [id])
+  book     Book       @relation(fields: [bookId], references: [id])
+  Sentence Sentence[]
 
-  @@id([libraryId, bookId], map: "library_book_pk")
-  @@index([libraryId])
-  @@index([bookId])
-  @@map("libaray_book")
+  @@unique([libraryId, bookId])
+  @@index(libraryId)
+  @@index(bookId)
+  @@map("library_book")
 }
 
 model Sentence {
-  seq       Int       @id(map: "sentence_pk") @default(autoincrement())
-  bookId    String    @map("book_id") @db.VarChar(100)
-  userId    String    @map("user_id") @db.Uuid
-  content   String    @db.VarChar(200)
+  id            String    @id(map: "sentence_pk") @default(uuid()) @db.Uuid
+  libraryBookId String    @map("library_book_id") @db.Uuid
+  content       String    @db.VarChar(200)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamp(6)
+
+  libraryBook LibraryBook   @relation(fields: [libraryBookId], references: [id])
+  SentenceTag SentenceTag[]
+
+  @@index(libraryBookId)
+  @@map("sentence")
+}
+
+model Tag {
+  name      String    @id(map: "tag_pk") @db.VarChar(50)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
-  tags      Tag[]
 
-  book Book @relation(fields: [bookId], references: [id])
+  sentenceTag SentenceTag[]
 
-  @@index([bookId])
-  @@map("sentence")
+  @@map("tag")
+}
+
+model SentenceTag {
+  sentenceId String @map("sentence_id") @db.Uuid
+  tagName    String @map("tag_name")
+
+  sentence Sentence @relation(fields: [sentenceId], references: [id])
+  tag      Tag      @relation(fields: [tagName], references: [name])
+
+  @@id([sentenceId, tagName])
+  @@index(sentenceId)
+  @@index(tagName)
+  @@map("sentence_tag")
 }

@@ -5,10 +5,18 @@ const prisma = new PrismaClient();
 async function main() {
   console.log(`Start seeding ...`);
   await createUser();
+  await createLibrary();
   await createBook();
+  await createLibraryBook();
   await createSentence();
   console.log(`Seeding finished.`);
 }
+
+const userId = '85322046-2031-4fcf-843d-3d8cb1347ed9';
+const libraryId = 'be3df23b-f292-4b7f-a6cb-8282007a43d3';
+const bookId = '9788996991342';
+const libraryBookId = 'be3df23b-f292-4b7f-a6cb-8282007a43d3';
+const sentenceId = 'c76e123d-73c8-4766-a644-a99ce6b39b50';
 
 async function createUser() {
   const users: Prisma.UserCreateInput[] = [
@@ -16,7 +24,7 @@ async function createUser() {
       email: 'alice@prisma.io',
       macId: 'macId1',
       nickName: 'Alice',
-      id: '85322046-2031-4fcf-843d-3d8cb1347ed9',
+      id: userId,
     },
   ];
 
@@ -34,10 +42,31 @@ async function createUser() {
   }
 }
 
+async function createLibrary() {
+  const library: Prisma.LibraryCreateInput = {
+    id: libraryId,
+    userId,
+  };
+
+  await prisma.library.create({
+    data: library,
+  });
+}
+
+async function createLibraryBook() {
+  return await prisma.libraryBook.create({
+    data: {
+      id: libraryBookId,
+      libraryId,
+      bookId,
+    },
+  });
+}
+
 async function createBook() {
   const books: Prisma.BookCreateInput[] = [
     {
-      id: '9788996991342',
+      id: bookId,
       title: '미움받을 용기',
     },
   ];
@@ -57,30 +86,18 @@ async function createBook() {
 }
 
 async function createSentence() {
-  const sentences: Prisma.SentenceCreateInput[] = [
+  const sentences: Prisma.SentenceCreateManyInput[] = [
     {
-      book: {
-        connect: {
-          id: '9788996991342',
-        },
-      },
-      userId: '85322046-2031-4fcf-843d-3d8cb1347ed9',
+      id: sentenceId,
+      libraryBookId: libraryBookId,
       content:
         '자신이 생각하는 이상적인 삶을 살 수 있는 길은 가장 완벽한 하루를 상상해보는 것에서 시작한단다. 그리고 그 완벽한 하루와 닮은 습관들을 하나씩 만들어나가다 보면 결국엔 꿈꾸던 삶을 살게 된다는 것',
     },
   ];
-  for (const sentence of sentences) {
-    const isExist = await prisma.sentence.findUnique({
-      where: { seq: 1 },
-    });
 
-    if (isExist) continue;
-
-    const createdSentence = await prisma.sentence.create({
-      data: sentence,
-    });
-    console.log(`Created sentence with id: ${createdSentence.seq}`);
-  }
+  await prisma.sentence.createMany({
+    data: sentences,
+  });
 }
 
 main()

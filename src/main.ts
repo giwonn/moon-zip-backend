@@ -19,6 +19,14 @@ async function bootstrap() {
     .setTitle('Moon-Zip API')
     .setDescription('The Moon-Zip API description')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'Access-Token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);

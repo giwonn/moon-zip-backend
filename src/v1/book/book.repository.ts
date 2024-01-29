@@ -29,19 +29,19 @@ export class BookRepository {
     });
   }
 
-  async findManyByLibraryIds(libraryIds: string[]) {
-    return await this.prisma.book.findMany({
-      where: {
-        libraryBooks: {
-          some: {
-            libraryId: {
-              in: libraryIds,
-            },
-          },
-        },
-      },
-    });
-  }
+  // async findManyByLibraryIds(libraryIds: string[]) {
+  //   return await this.prisma.book.findMany({
+  //     where: {
+  //       libraryBooks: {
+  //         some: {
+  //           libraryId: {
+  //             in: libraryIds,
+  //           },
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 
   async upsert(book: Book) {
     return await this.prisma.book.upsert({

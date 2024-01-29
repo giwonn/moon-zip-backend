@@ -22,7 +22,7 @@ export class BestSellerService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.allTop50();
+    // await this.allTop50();
   }
 
   // 매일 오전 6시에 실행

@@ -74,30 +74,30 @@ export class BookService {
     return await this.bookSearchClient.searchBooks(target, query);
   }
 
-  async findManyByUserId(userId: string) {
-    // 유저의 라이브러리 가져와서
-    const libraries = await this.libraryRepository.findAll(userId);
-    const libraryIds = libraries.map((library) => library.id);
+  // async findManyByUserId(userId: string) {
+  //   // 유저의 라이브러리 가져와서
+  //   const libraries = await this.libraryRepository.findAll(userId);
+  //   const libraryIds = libraries.map((library) => library.id);
+  //
+  //   return await this.bookRepository.findManyByLibraryIds(libraryIds);
+  // }
 
-    return await this.bookRepository.findManyByLibraryIds(libraryIds);
-  }
-
-  async findOneByUserId(userId: string, bookId: string) {
-    const [sentences, book] = await Promise.all([
-      this.sentenceRepository.findMany(userId, bookId),
-      this.bookRepository.findOne(bookId),
-    ]);
-
-    const sentencesWithTag = sentences.map((sentence) => ({
-      ...sentence,
-      tags: sentence.tags.map((tag) => tag.name),
-    }));
-
-    return {
-      ...book,
-      sentences: sentencesWithTag,
-    };
-  }
+  // async findOneByUserId(userId: string, bookId: string) {
+  //   const [sentences, book] = await Promise.all([
+  //     this.sentenceRepository.findMany({ userId }),
+  //     this.bookRepository.findOne(bookId),
+  //   ]);
+  //
+  //   const sentencesWithTag = sentences.map((sentence) => ({
+  //     ...sentence,
+  //     tags: sentence.tags.map((tag) => tag.name),
+  //   }));
+  //
+  //   return {
+  //     ...book,
+  //     sentences: sentencesWithTag,
+  //   };
+  // }
 
   async count(userId: string) {
     return await this.bookRepository.count(userId);

@@ -65,28 +65,28 @@ export class BookController {
     return await this.bookService.create(createBookDto, validUserId);
   }
 
-  @Get('detail/:id')
-  @ApiOperation({ summary: '도서 상세 조회' })
-  @ApiOkResponse({ type: Book })
-  async findOne(@Headers('token') token: string, @Param('id') id: string) {
-    const validUserId = token; // Validate Logic
-    return await this.bookService.findOneByUserId(validUserId, id);
-  }
-
-  @Get(':target/:query')
-  @ApiOperation({ summary: '도서 조회' })
-  @ApiOkResponse({ type: Book })
-  async search(@Param() { target, query }: SearchBookDto) {
-    return await this.bookService.search(target, query);
-  }
-
-  @Get('list')
-  @ApiOperation({ summary: '도서 목록 조회' })
-  @ApiOkResponse({ type: Book })
-  async findAll(@Headers('token') token: string) {
-    const validUserId = token; // Validate Logic
-    return await this.bookService.findManyByUserId(validUserId);
-  }
+  // @Get('detail/:id')
+  // @ApiOperation({ summary: '도서 상세 조회' })
+  // @ApiOkResponse({ type: Book })
+  // async findOne(@Headers('token') token: string, @Param('id') id: string) {
+  //   const validUserId = token; // Validate Logic
+  //   return await this.bookService.findOneByUserId(validUserId, id);
+  // }
+  //
+  // @Get(':target/:query')
+  // @ApiOperation({ summary: '도서 조회' })
+  // @ApiOkResponse({ type: Book })
+  // async search(@Param() { target, query }: SearchBookDto) {
+  //   return await this.bookService.search(target, query);
+  // }
+  //
+  // @Get('list')
+  // @ApiOperation({ summary: '도서 목록 조회' })
+  // @ApiOkResponse({ type: Book })
+  // async findAll(@Headers('token') token: string) {
+  //   const validUserId = token; // Validate Logic
+  //   return await this.bookService.findManyByUserId(validUserId);
+  // }
 
   @Get('count')
   @ApiOperation({ summary: '도서 수 조회' })

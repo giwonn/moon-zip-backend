@@ -29,7 +29,7 @@ export class UserRepository {
   findOneBySocialIdAndSocialType(socialId: string, socialType: string) {
     return this.prisma.user.findFirst({
       where: {
-        socialUsers: {
+        socialUser: {
           some: {
             id: socialId,
             type: socialType,
